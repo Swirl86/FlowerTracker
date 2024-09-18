@@ -1,6 +1,7 @@
 package com.swirl.flowertracker.ui.theme
 
 import android.app.Activity
+import android.content.res.Configuration
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -13,18 +14,26 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
+import com.swirl.flowertracker.StartScreen
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary = PrimaryColor,
+    secondary = SecondaryColor,
+    tertiary = DarkTertiary,
+    background = DarkBackground,
+    surface = DarkSurface,
+    onSurface = DarkOnSurface
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
+    primary = PrimaryColor,
+    secondary = SecondaryColor,
+    tertiary = LightTertiary,
+    background = LightBackground,
+    surface = LightSurface,
+    onSurface = LightOnSurface
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -41,7 +50,7 @@ private val LightColorScheme = lightColorScheme(
 fun FlowerTrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -67,4 +76,20 @@ fun FlowerTrackerTheme(
         typography = Typography,
         content = content
     )
+}
+
+@Preview(name = "Light Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Composable
+fun LightThemePreview() {
+    FlowerTrackerTheme(darkTheme = false) {
+        StartScreen(onAddFlowerClick = {})
+    }
+}
+
+@Preview(name = "Dark Theme", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun DarkThemePreview() {
+    FlowerTrackerTheme(darkTheme = true) {
+        StartScreen(onAddFlowerClick = {})
+    }
 }

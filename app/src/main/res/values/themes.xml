@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.FlowerTracker" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Base.Theme.FlowerTracker" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Add other style settings if needed -->
+    </style>
+
+    <style name="Theme.SplashScreen" parent="Base.Theme.FlowerTracker"/>
+    <style name="SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/lightTertiary</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_app_icon_splash</item>
+        <item name="postSplashScreenTheme">@style/Theme.SplashScreen</item>
+    </style>
 </resources>

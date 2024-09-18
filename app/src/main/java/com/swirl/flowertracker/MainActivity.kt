@@ -19,11 +19,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.swirl.flowertracker.ui.theme.FlowerTrackerTheme
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        installSplashScreen()
         setContent {
             FlowerTrackerTheme {
                 Surface(
