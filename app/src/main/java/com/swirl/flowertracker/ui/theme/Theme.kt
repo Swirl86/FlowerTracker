@@ -16,7 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowCompat
-import com.swirl.flowertracker.StartScreen
+import com.swirl.flowertracker.ui.StartScreen
 
 private val DarkColorScheme = darkColorScheme(
     primary = PrimaryColor,
@@ -82,7 +82,7 @@ fun FlowerTrackerTheme(
 @Composable
 fun LightThemePreview() {
     FlowerTrackerTheme(darkTheme = false) {
-        StartScreen(onAddFlowerClick = {})
+        StartScreen(emptyList(), onAddFlowerClick = {})
     }
 }
 
@@ -90,6 +90,6 @@ fun LightThemePreview() {
 @Composable
 fun DarkThemePreview() {
     FlowerTrackerTheme(darkTheme = true) {
-        StartScreen(onAddFlowerClick = {})
+        StartScreen(emptyList(), onAddFlowerClick = {})
     }
 }

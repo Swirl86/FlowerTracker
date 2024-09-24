@@ -9,10 +9,20 @@
         <State />
       </entry>
       <entry key="MainActivity">
-        <State />
-      </entry>
-      <entry key="StartScreenPreview">
-        <State />
+        <State>
+          <runningDeviceTargetSelectedWithDropDown>
+            <Target>
+              <type value="RUNNING_DEVICE_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="SERIAL_NUMBER" />
+                  <value value="P6LDU16B11000213" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </runningDeviceTargetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-09-24T07:44:33.258218300Z" />
+        </State>
       </entry>
       <entry key="app">
         <State />
