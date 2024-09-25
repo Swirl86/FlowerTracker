@@ -1,4 +1,4 @@
-package com.swirl.flowertracker.ui
+package com.swirl.flowertracker.screens.addFlower
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.swirl.flowertracker.R
+import com.swirl.flowertracker.permissions.CheckPermissions
+import com.swirl.flowertracker.permissions.PermissionDialog
 
 @Composable
 fun AddFlowerScreen(onBackClick: () -> Unit) {

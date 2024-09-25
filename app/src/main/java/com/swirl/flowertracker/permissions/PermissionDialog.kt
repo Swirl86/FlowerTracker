@@ -1,4 +1,4 @@
-package com.swirl.flowertracker.ui
+package com.swirl.flowertracker.permissions
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text

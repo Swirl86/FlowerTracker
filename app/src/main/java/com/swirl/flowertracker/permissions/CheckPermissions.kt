@@ -1,4 +1,4 @@
-package com.swirl.flowertracker.ui
+package com.swirl.flowertracker.permissions
 
 import android.Manifest
 import android.util.Log

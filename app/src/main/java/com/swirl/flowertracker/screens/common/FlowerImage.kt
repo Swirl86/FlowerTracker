@@ -1,4 +1,4 @@
-package com.swirl.flowertracker.ui
+package com.swirl.flowertracker.screens.common
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size

@@ -1,4 +1,4 @@
-package com.swirl.flowertracker.ui
+package com.swirl.flowertracker.screens.myPlants
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,14 +11,18 @@ import androidx.compose.ui.Modifier
 import com.swirl.flowertracker.data.Flower
 
 @Composable
-fun StartScreen(flowers: List<Flower>, onAddFlowerClick: () -> Unit) {
-    if (flowers.isEmpty()) {
-        EmptyScreen(onAddFlowerClick = onAddFlowerClick)
-    } else {
-        FlowerListScreen(flowers, onAddFlowerClick)
+fun MyPlantsScreen(
+    flowers: List<Flower>,
+    onAddFlowerClick: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        if (flowers.isEmpty()) {
+            EmptyScreen(onAddFlowerClick = onAddFlowerClick)
+        } else {
+            FlowerListScreen(flowers, onAddFlowerClick)
+        }
     }
 }
-
 
 @Composable
 fun FlowerListScreen(flowers: List<Flower>, onAddFlowerClick: () -> Unit) {
@@ -35,4 +39,3 @@ fun FlowerListScreen(flowers: List<Flower>, onAddFlowerClick: () -> Unit) {
         }
     }
 }
-
