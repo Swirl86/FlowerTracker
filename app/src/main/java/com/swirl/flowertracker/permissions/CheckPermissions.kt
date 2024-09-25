@@ -6,6 +6,10 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -18,30 +22,30 @@ fun CheckPermissions(
 ) {
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     val storagePermissionState = rememberPermissionState(Manifest.permission.READ_EXTERNAL_STORAGE)
+    var askedForPermission by remember { mutableStateOf(false) }
 
-    // Create launcher for requesting camera permission
+    // Unified result handler for both permissions
+    val permissionResultHandler: (Boolean) -> Unit = { isGranted ->
+        if (isGranted) {
+            if (cameraPermissionState.status.isGranted && storagePermissionState.status.isGranted) {
+                onPermissionsGranted()
+            }
+        } else {
+            onPermissionsDenied(true)
+        }
+    }
+
     val cameraPermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
-            Log.i("TAG-1 cameraPermissionResultLauncher", isGranted.toString())
-            if (isGranted) {
-                onPermissionsGranted()
-            } else {
-                onPermissionsDenied(true)
-            }
+            permissionResultHandler(isGranted)
         }
     )
 
-    // Create launcher for requesting storage permission
     val storagePermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
         onResult = { isGranted ->
-            Log.i("TAG-1 storagePermissionResultLauncher", isGranted.toString())
-            if (isGranted) {
-                onPermissionsGranted()
-            } else {
-                onPermissionsDenied(true)
-            }
+            permissionResultHandler(isGranted)
         }
     )
 
@@ -49,10 +53,10 @@ fun CheckPermissions(
     LaunchedEffect(Unit) {
         if (!cameraPermissionState.status.isGranted) {
             cameraPermissionResultLauncher.launch(Manifest.permission.CAMERA)
-        }
-
-        if (!storagePermissionState.status.isGranted) {
+        } else if (!storagePermissionState.status.isGranted) {
             storagePermissionResultLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+        } else {
+            onPermissionsGranted()
         }
     }
 }
