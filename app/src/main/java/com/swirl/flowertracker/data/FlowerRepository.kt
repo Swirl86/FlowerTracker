@@ -1,10 +1,10 @@
 package com.swirl.flowertracker.data
 
-import kotlinx.coroutines.flow.Flow
+import androidx.lifecycle.LiveData
 
 class FlowerRepository(private val flowerDao: FlowerDao) {
 
-    val allFlowers: Flow<List<Flower>> = flowerDao.getAllFlowers()
+    val allFlowers: LiveData<List<Flower>> = flowerDao.getAllFlowers()
 
     suspend fun insert(flower: Flower) {
         flowerDao.insert(flower)

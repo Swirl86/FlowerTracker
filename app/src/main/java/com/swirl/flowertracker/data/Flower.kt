@@ -2,7 +2,7 @@ package com.swirl.flowertracker.data
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.Date
 
 @Entity(tableName = "flower_table")
 data class Flower(

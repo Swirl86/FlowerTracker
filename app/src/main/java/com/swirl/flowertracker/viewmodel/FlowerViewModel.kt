@@ -7,7 +7,6 @@ import com.swirl.flowertracker.data.FlowerRepository
 import kotlinx.coroutines.launch
 
 class FlowerViewModel(private val repository: FlowerRepository) : ViewModel() {
-
     val allFlowers = repository.allFlowers
 
     fun addFlower(flower: Flower) {

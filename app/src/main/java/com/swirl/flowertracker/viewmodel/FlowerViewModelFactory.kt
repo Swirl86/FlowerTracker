@@ -3,9 +3,6 @@ package com.swirl.flowertracker.viewmodel
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.room.Room
-import com.swirl.flowertracker.data.FlowerDatabase
-import com.swirl.flowertracker.data.FlowerRepository
 
 class FlowerViewModelFactory(private val app: Application) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
@@ -17,4 +14,3 @@ class FlowerViewModelFactory(private val app: Application) : ViewModelProvider.F
         throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
-

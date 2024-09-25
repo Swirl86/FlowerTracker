@@ -61,9 +61,11 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.material)
+    implementation(libs.accompanist.permissions)
 
     // Jetpack Compose
     implementation(libs.androidx.ui)
