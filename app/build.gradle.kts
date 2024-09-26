@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.material)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
+
 
     // Coil for image loading
     implementation(libs.coil.compose)

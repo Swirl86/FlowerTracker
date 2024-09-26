@@ -24,7 +24,7 @@ fun Navigation(navController: NavHostController, flowerViewModel: FlowerViewMode
             )
         }
         composable(route = Screen.AddPlant.route) {
-            AddFlowerScreen(onBackClick = { navController.popBackStack() })
+            AddFlowerScreen()
         }
         composable(route = Screen.Search.route) {
             SearchScreen()
