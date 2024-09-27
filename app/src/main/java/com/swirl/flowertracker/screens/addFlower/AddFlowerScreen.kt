@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -47,6 +48,7 @@ import com.swirl.flowertracker.R
 import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.permissions.CheckPermissions
 import com.swirl.flowertracker.permissions.PermissionDialog
+import com.swirl.flowertracker.utils.saveImageToInternalStorage
 import com.swirl.flowertracker.utils.stringToDate
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
 import kotlinx.coroutines.launch
@@ -56,7 +58,9 @@ fun AddFlowerScreen(
     flowerViewModel: FlowerViewModel = hiltViewModel(),
     onFlowerSaved: () -> Unit
 ) {
-    var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
+    val context = LocalContext.current
+
+    var imageUri by rememberSaveable { mutableStateOf<String?>(null) }
     var flowerName by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
     var lastWateredDate by rememberSaveable { mutableStateOf("") }
@@ -68,6 +72,7 @@ fun AddFlowerScreen(
     var showPermissionDialog by remember { mutableStateOf(false) }
     var showImagePickerDialog by remember { mutableStateOf(false) }
 
+    // TODO move to own file
     var errorMessage by remember { mutableStateOf("") }
     var showErrorDialog by remember { mutableStateOf(false) }
 
@@ -80,10 +85,27 @@ fun AddFlowerScreen(
         }
     }
 
-    val selectImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        uri?.let { imageUri = it }
-    }
+    val selectImageLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent(),
+        onResult = { uri: Uri? ->
+            if (uri != null) {
+                val fileName = "flower_image_${System.currentTimeMillis()}.jpg"
+                val savedImagePath = saveImageToInternalStorage(context, uri, fileName)
 
+                if (savedImagePath != null) {
+                    imageUri = savedImagePath
+                } else {
+                    errorMessage = "Failed to save image. Please try again."
+                    showErrorDialog = true
+                }
+            } else {
+                errorMessage = "Failed to select image. Please try again."
+                showErrorDialog = true
+            }
+        }
+    )
+
+    // TODO move to own file
     // Check permissions for camera and storage
     CheckPermissions(
         onPermissionsGranted = {
@@ -240,12 +262,11 @@ fun AddFlowerScreen(
         )
         Spacer(modifier = Modifier.height(16.dp))
 
-        // TODO not done WIP
         Button(
             onClick = {
                 val newFlower = Flower(
                     name = flowerName,
-                    imageUri = imageUri?.toString() ?: "",
+                    imageUri = imageUri,
                     notes = notes,
                     lastWatered = lastWateredDate.takeIf { it.isNotEmpty() }?.stringToDate(),
                     waterAlarmDate = nextWateredDate.takeIf { it.isNotEmpty() }?.stringToDate(),
@@ -270,6 +291,7 @@ fun AddFlowerScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
 
+        // TODO move to own file
         if (showErrorDialog) {
             AlertDialog(
                 onDismissRequest = { showErrorDialog = false },

@@ -8,7 +8,7 @@ import java.time.LocalDate
 data class Flower(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
-    val imageUri: String,
+    val imageUri: String?,
     val notes: String?,
     val lastWatered: LocalDate?,
     val waterAlarmDate: LocalDate?,

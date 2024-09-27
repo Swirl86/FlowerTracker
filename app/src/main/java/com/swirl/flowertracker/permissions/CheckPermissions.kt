@@ -16,6 +16,7 @@ fun CheckPermissions(
     onPermissionsGranted: () -> Unit,
     onPermissionsDenied: () -> Unit
 ) {
+    // TODO check logic
     val cameraPermissionState = rememberPermissionState(Manifest.permission.CAMERA)
     val storagePermissionState = rememberPermissionState(Manifest.permission.READ_EXTERNAL_STORAGE)
 

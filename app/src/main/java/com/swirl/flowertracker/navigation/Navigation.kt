@@ -17,7 +17,7 @@ fun Navigation(navController: NavHostController, flowerViewModel: FlowerViewMode
     NavHost(navController = navController, startDestination = Screen.MyPlants.route, Modifier.padding(innerPadding)) {
         composable(route = Screen.MyPlants.route) {
             MyPlantsScreen(
-                flowers = flowerViewModel.allFlowers.value.orEmpty(),
+                flowerViewModel = flowerViewModel,
                 onAddFlowerClick = {
                     navController.navigate(Screen.AddPlant.route)
                 }

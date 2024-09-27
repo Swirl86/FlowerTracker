@@ -86,6 +86,7 @@ dependencies {
     implementation( libs.androidx.hilt.navigation.compose)
 
     // Coil for image loading
+    implementation(libs.coil)
     implementation(libs.coil.compose)
 
     // Jetpack Navigation

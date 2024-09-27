@@ -1,30 +1,29 @@
 package com.swirl.flowertracker.screens.common
 
+import android.net.Uri
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.request.ImageRequest
+import coil.compose.rememberAsyncImagePainter
 import com.swirl.flowertracker.R
 
 @Composable
-fun FlowerImage(imageUrl: String? = null, modifier: Modifier = Modifier
+fun FlowerImage(imageUri: String? = null, modifier: Modifier = Modifier
     .size(128.dp)
-    .padding(bottom = 16.dp)
+    .padding(bottom = 16.dp),
+    contentScale: ContentScale = ContentScale.Inside
 ) {
-    val request = ImageRequest.Builder(LocalContext.current)
-        .data(imageUrl ?: R.drawable.placeholder)
-        .crossfade(true)
-        .build()
+    val img = imageUri?.let { Uri.parse(it) } ?: R.drawable.placeholder
+    val painter = rememberAsyncImagePainter(img)
 
-    AsyncImage(
-        model = request,
+    Image(
+        painter = painter,
         contentDescription = "Flower image",
-        contentScale = ContentScale.Inside,
+        contentScale = contentScale,
         modifier = modifier
     )
 }

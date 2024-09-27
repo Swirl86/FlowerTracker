@@ -2,8 +2,8 @@ package com.swirl.flowertracker.di
 
 import android.content.Context
 import androidx.room.Room
-import com.swirl.flowertracker.data.local.dao.FlowerDao
 import com.swirl.flowertracker.data.local.FlowerDatabase
+import com.swirl.flowertracker.data.local.dao.FlowerDao
 import com.swirl.flowertracker.data.repository.FlowerRepository
 import dagger.Module
 import dagger.Provides

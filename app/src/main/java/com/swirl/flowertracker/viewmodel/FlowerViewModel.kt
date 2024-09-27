@@ -1,6 +1,8 @@
 package com.swirl.flowertracker.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.data.repository.FlowerRepository
@@ -12,20 +14,16 @@ import javax.inject.Inject
 class FlowerViewModel @Inject constructor(
     private val repository: FlowerRepository
 ) : ViewModel() {
-    val allFlowers = repository.allFlowers
 
-    // TODO not done WIP
-    suspend fun addFlower(flower: Flower) : Boolean {
-        var saveSuccessful = false
-        viewModelScope.launch {
-            saveSuccessful = try {
-                repository.insert(flower)
-                true
-            } catch (e: Exception) {
-                false
-            }
+    val allFlowers: LiveData<List<Flower>> = repository.getAllFlowers().asLiveData()
+
+    suspend fun addFlower(flower: Flower): Boolean {
+        return try {
+            repository.insert(flower)
+            true
+        } catch (e: Exception) {
+            false
         }
-        return saveSuccessful
     }
 
     fun deleteFlower(flower: Flower) {
