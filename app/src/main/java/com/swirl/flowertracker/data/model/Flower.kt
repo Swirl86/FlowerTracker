@@ -1,8 +1,8 @@
-package com.swirl.flowertracker.data
+package com.swirl.flowertracker.data.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import java.util.Date
+import java.time.LocalDate
 
 @Entity(tableName = "flower_table")
 data class Flower(
@@ -10,8 +10,8 @@ data class Flower(
     val name: String,
     val imageUri: String,
     val notes: String?,
-    val lastWatered: Date?,
-    val waterAlarmDate: Date?,
-    val lastFertilized: Date?,
-    val fertilizeAlarmDate: Date?
+    val lastWatered: LocalDate?,
+    val waterAlarmDate: LocalDate?,
+    val lastFertilized: LocalDate?,
+    val fertilizeAlarmDate: LocalDate?
 )

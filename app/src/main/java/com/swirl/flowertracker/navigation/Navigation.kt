@@ -24,7 +24,14 @@ fun Navigation(navController: NavHostController, flowerViewModel: FlowerViewMode
             )
         }
         composable(route = Screen.AddPlant.route) {
-            AddFlowerScreen()
+            AddFlowerScreen(
+                flowerViewModel,
+                onFlowerSaved = {
+                    navController.navigate(Screen.MyPlants.route) {
+                        popUpTo(Screen.MyPlants.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(route = Screen.Search.route) {
             SearchScreen()

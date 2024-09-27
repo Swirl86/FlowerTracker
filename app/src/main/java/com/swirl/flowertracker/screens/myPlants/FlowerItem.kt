@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.swirl.flowertracker.data.Flower
+import com.swirl.flowertracker.data.model.Flower
 
 @Composable
 fun FlowerItem(flower: Flower) {

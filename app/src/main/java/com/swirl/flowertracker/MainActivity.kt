@@ -14,11 +14,12 @@ import com.swirl.flowertracker.navigation.BottomNavigationBar
 import com.swirl.flowertracker.navigation.Navigation
 import com.swirl.flowertracker.ui.theme.FlowerTrackerTheme
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
-import com.swirl.flowertracker.viewmodel.FlowerViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val flowerViewModel: FlowerViewModel by viewModels { FlowerViewModelFactory(application) }
+    private val flowerViewModel: FlowerViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

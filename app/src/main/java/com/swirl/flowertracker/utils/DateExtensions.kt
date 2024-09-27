@@ -3,23 +3,19 @@ package com.swirl.flowertracker.utils
 import android.annotation.SuppressLint
 import java.time.Instant
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.Locale
 
-fun LocalDateTime.dateTimeToString(): String {
-    val pattern = "dd MMM yyyy HH:mm"
-    return this.format(DateTimeFormatter.ofPattern(pattern))
-}
-
-fun LocalDateTime.toMillis() = this.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
-
-fun LocalDateTime.yearRange(nr: Int = 10) = (this.minusYears(nr.toLong()).year..this.plusYears(nr.toLong()).year)
-
 @SuppressLint("ConstantLocale")
 private val defaultDateFormatter = DateTimeFormatter.ofPattern("EEEE, dd MMMM, yyyy", Locale.getDefault())
+
+fun String.stringToDate(): LocalDate {
+    val formatter = DateTimeFormatter.ofPattern("dd mm yyyy")
+    return runCatching { LocalDate.parse(this, formatter) }
+        .getOrDefault(LocalDate.now())
+}
 
 fun Long.convertMillisToLocalDate() : LocalDate {
     return Instant

@@ -1,8 +1,6 @@
 package com.swirl.flowertracker.screens.addFlower
 
-import android.graphics.drawable.Icon
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -22,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
@@ -39,16 +38,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import coil.compose.rememberAsyncImagePainter
 import com.swirl.flowertracker.R
+import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.permissions.CheckPermissions
 import com.swirl.flowertracker.permissions.PermissionDialog
+import com.swirl.flowertracker.utils.stringToDate
+import com.swirl.flowertracker.viewmodel.FlowerViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun AddFlowerScreen() {
+fun AddFlowerScreen(
+    flowerViewModel: FlowerViewModel = hiltViewModel(),
+    onFlowerSaved: () -> Unit
+) {
     var imageUri by rememberSaveable { mutableStateOf<Uri?>(null) }
     var flowerName by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
@@ -60,6 +67,9 @@ fun AddFlowerScreen() {
     var permissionsGranted by remember { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
     var showImagePickerDialog by remember { mutableStateOf(false) }
+
+    var errorMessage by remember { mutableStateOf("") }
+    var showErrorDialog by remember { mutableStateOf(false) }
 
     // Launchers for camera and image selection
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
@@ -230,9 +240,28 @@ fun AddFlowerScreen() {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // TODO not done WIP
         Button(
             onClick = {
-                // TODO: Handle saving the flower object
+                val newFlower = Flower(
+                    name = flowerName,
+                    imageUri = imageUri?.toString() ?: "",
+                    notes = notes,
+                    lastWatered = lastWateredDate.takeIf { it.isNotEmpty() }?.stringToDate(),
+                    waterAlarmDate = nextWateredDate.takeIf { it.isNotEmpty() }?.stringToDate(),
+                    lastFertilized = lastFertilizedDate.takeIf { it.isNotEmpty() }?.stringToDate(),
+                    fertilizeAlarmDate = nextFertilizedDate.takeIf { it.isNotEmpty() }?.stringToDate()
+                )
+
+                flowerViewModel.viewModelScope.launch {
+                    val saveSuccessful = flowerViewModel.addFlower(newFlower)
+                    if (saveSuccessful) {
+                        onFlowerSaved()
+                    } else {
+                        errorMessage = "Failed to save flower. Please try again."
+                        showErrorDialog = true
+                    }
+                }
             },
             enabled = isSaveEnabled
         ) {
@@ -240,5 +269,18 @@ fun AddFlowerScreen() {
         }
 
         Spacer(modifier = Modifier.height(8.dp))
+
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text(text = "Error") },
+                text = { Text(text = errorMessage) },
+                confirmButton = {
+                    Button(onClick = { showErrorDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
     }
 }

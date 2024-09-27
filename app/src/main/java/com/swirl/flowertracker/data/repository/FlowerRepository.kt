@@ -1,6 +1,8 @@
-package com.swirl.flowertracker.data
+package com.swirl.flowertracker.data.repository
 
 import androidx.lifecycle.LiveData
+import com.swirl.flowertracker.data.local.dao.FlowerDao
+import com.swirl.flowertracker.data.model.Flower
 
 class FlowerRepository(private val flowerDao: FlowerDao) {
 
