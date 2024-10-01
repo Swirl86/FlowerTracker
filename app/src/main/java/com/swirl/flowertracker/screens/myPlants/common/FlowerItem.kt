@@ -1,4 +1,4 @@
-package com.swirl.flowertracker.screens.myPlants
+package com.swirl.flowertracker.screens.myPlants.common
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
