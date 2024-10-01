@@ -3,6 +3,7 @@ package com.swirl.flowertracker.screens.addFlower
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -48,6 +49,7 @@ import com.swirl.flowertracker.permissions.CheckPermissions
 import com.swirl.flowertracker.permissions.PermissionDialog
 import com.swirl.flowertracker.screens.addFlower.common.CustomOutlinedTextField
 import com.swirl.flowertracker.screens.common.ErrorDialog
+import com.swirl.flowertracker.utils.saveBitmapToInternalStorage
 import com.swirl.flowertracker.utils.saveImageToInternalStorage
 import com.swirl.flowertracker.utils.stringToDate
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
@@ -73,14 +75,21 @@ fun AddFlowerScreen(
     var showImagePickerDialog by remember { mutableStateOf(false) }
 
     var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage = stringResource(R.string.error_message_failed_save_flower)
+    var errorMessage by remember { mutableStateOf(context.getString(R.string.error_message_failed_save_flower)) }
 
-    // Launchers for camera and image selection
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-        // TODO Handle camera image result
-        if (bitmap != null) {
-            // TODO Convert bitmap to a usable format, such as Uri if needed
-            // imageUri = conversionFunction(bitmap)
+        if (bitmap == null) {
+            return@rememberLauncherForActivityResult
+        }
+
+        val fileName = "flower_image_${System.currentTimeMillis()}.jpg"
+        val savedImagePath = saveBitmapToInternalStorage(context, bitmap, fileName)
+
+        if (savedImagePath != null) {
+            imageUri = savedImagePath
+        } else {
+            errorMessage = context.getString(R.string.error_message_failed_save_image)
+            showErrorDialog = true
         }
     }
 
@@ -192,19 +201,19 @@ fun AddFlowerScreen(
             }
         }
 
-        // Show the ImagePickerDialog when needed
-        ImagePickerDialog(
-            showDialog = showImagePickerDialog,
-            onDismiss = { showImagePickerDialog = false },
-            onCameraClick = {
-                cameraLauncher.launch(null)
-                showImagePickerDialog = false
-            },
-            onGalleryClick = {
-                selectImageLauncher.launch("image/*")
-                showImagePickerDialog = false
-            }
-        )
+        if (showImagePickerDialog) {
+            ImagePickerDialog(
+                onDismiss = { showImagePickerDialog = false },
+                onCameraClick = {
+                    cameraLauncher.launch()
+                    showImagePickerDialog = false
+                },
+                onGalleryClick = {
+                    selectImageLauncher.launch("image/*")
+                    showImagePickerDialog = false
+                }
+            )
+        }
 
         // Input fields for flower details
         CustomOutlinedTextField(

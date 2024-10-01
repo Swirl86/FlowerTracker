@@ -54,4 +54,5 @@
     <string name="error_message_failed_delete_flower">Failed to delete flower. Please try again.</string>
     <string name="error_message_failed_save_image">Failed to save image. Please try again.</string>
     <string name="error_message_failed_select_image">Failed to select image. Please try again.</string>
+    <string name="error_message_failed_take_picture">Failed to take picture. Please try again.</string>
 </resources>
