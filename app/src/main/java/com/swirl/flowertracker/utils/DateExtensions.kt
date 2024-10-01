@@ -5,6 +5,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.time.temporal.WeekFields
 import java.util.Locale
 
@@ -45,3 +46,8 @@ fun LocalDate.dateToString(): String {
 /** Extension function to get ISO week number */
 val LocalDate.isoWeekNumber: Int
     get() = this.get(WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear())
+
+fun LocalDate.daysUntil(): Long {
+    val today = LocalDate.now()
+    return ChronoUnit.DAYS.between(today, this)
+}

@@ -19,6 +19,12 @@
 
     <!-- Flower Item -->
     <string name="flower_item_last_watered">Last watered: %1$s</string>
+    <string name="flower_item_water">Watering in %1$s days</string>
+    <string name="flower_item_fertilize">Fertilizing in %1$s days</string>
+
+    <!-- Delete Item -->
+    <string name="delete_flower_title">Confirm Deletion</string>
+    <string name="delete_flower_text">Are you sure you want to delete this flower?</string>
 
     <!-- Image Picker -->
     <string name="image_picker_title">Select Image Source</string>
@@ -34,14 +40,18 @@
     <!-- Buttons -->
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
 
     <!-- Content Description -->
     <string name="desc_flower_image">Flower Image</string>
     <string name="desc_add_image">Add Image</string>
+    <string name="desc_delete_flower">Delete Flower</string>
 
     <!-- Errors -->
     <string name="error_message_default">Something went wrong.</string>
     <string name="error_message_failed_save_flower">Failed to save flower. Please try again.</string>
+    <string name="error_message_failed_delete_flower">Failed to delete flower. Please try again.</string>
     <string name="error_message_failed_save_image">Failed to save image. Please try again.</string>
     <string name="error_message_failed_select_image">Failed to select image. Please try again.</string>
 </resources>

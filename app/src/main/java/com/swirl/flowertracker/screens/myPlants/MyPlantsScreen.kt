@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
@@ -24,12 +23,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import com.swirl.flowertracker.R
 import com.swirl.flowertracker.permissions.CheckPermissions
 import com.swirl.flowertracker.permissions.PermissionDialog
+import com.swirl.flowertracker.screens.common.ErrorDialog
 import com.swirl.flowertracker.screens.myPlants.common.FlowerItem
 import com.swirl.flowertracker.utils.openAppSettings
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
+import kotlinx.coroutines.launch
 
 @Composable
 fun MyPlantsScreen(
@@ -38,8 +40,12 @@ fun MyPlantsScreen(
 ) {
     val context = LocalContext.current
     val flowers by flowerViewModel.allFlowers.observeAsState(emptyList())
+
     var permissionsGranted by remember { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
+
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage = stringResource(R.string.error_message_failed_delete_flower)
 
     CheckPermissions(
         onPermissionsGranted = {
@@ -60,7 +66,11 @@ fun MyPlantsScreen(
         )
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         if (flowers.isEmpty()) {
             EmptyScreen(onAddFlowerClick = onAddFlowerClick)
         } else if (!permissionsGranted) {
@@ -95,16 +105,30 @@ fun MyPlantsScreen(
         } else {
             Column {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 8.dp)
                 ) {
                     items(flowers.size) { index ->
-                        FlowerItem(flower = flowers[index])
+                        FlowerItem(
+                            flower = flowers[index],
+                            onClick = { /* TODO: Implement navigate to detailed page for flower */ },
+                            onDelete = {
+                                flowerViewModel.viewModelScope.launch {
+                                    val deleteFailed = !flowerViewModel.deleteFlower(flowers[index])
+                                    showErrorDialog = deleteFailed
+                                }
+                            }
+                        )
                     }
-                }
-                Button(onClick = onAddFlowerClick, modifier = Modifier.fillMaxWidth()) {
-                    Text(text = stringResource(R.string.add_new_flower))
                 }
             }
         }
+
+        ErrorDialog(
+            showDialog = showErrorDialog,
+            errorMessage = errorMessage,
+            onDismiss = { showErrorDialog = false }
+        )
     }
 }
