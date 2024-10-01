@@ -1,4 +1,47 @@
 <resources>
-    <string name="app_name">FlowerTracker</string>
-    <string name="splash_icon_desc">Flower Tracker</string>
+    <string name="app_name">Flower Tracker</string>
+
+    <!-- My Plants Screen -->
+    <string name="flower_empty">No flowers added</string>
+    <string name="add_new_flower">Add New Flower</string>
+
+    <!-- Flower Screen -->
+    <string name="flower_name_label">Flower Name</string>
+    <string name="flower_notes_label">Notes</string>
+    <string name="flower_last_watered_label">Last Watered Date</string>
+    <string name="flower_next_watered_label">Next Watered Date</string>
+    <string name="flower_last_fertilized_label">Last Fertilized Date</string>
+    <string name="flower_next_fertilized_label">Next Fertilized Date</string>
+
+    <!-- Add Flower Screen -->
+    <string name="add_flower_title">Add Flower</string>
+    <string name="add_flower_image">Tap to add image</string>
+
+    <!-- Flower Item -->
+    <string name="flower_item_last_watered">Last watered: %1$s</string>
+
+    <!-- Image Picker -->
+    <string name="image_picker_title">Select Image Source</string>
+    <string name="image_picker_text">Please select your preferred image source:</string>
+    <string name="image_picker_camera">Camera</string>
+    <string name="image_picker_gallery">Gallery</string>
+
+    <!-- Permission -->
+    <string name="permission_title">Permission Required</string>
+    <string name="permission_text">This app needs permission to access your camera and storage to manage images. Please grant permission in the settings.</string>
+    <string name="permission_settings">Open Settings</string>
+
+    <!-- Buttons -->
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
+
+    <!-- Content Description -->
+    <string name="desc_flower_image">Flower Image</string>
+    <string name="desc_add_image">Add Image</string>
+
+    <!-- Errors -->
+    <string name="error_message_default">Something went wrong.</string>
+    <string name="error_message_failed_save_flower">Failed to save flower. Please try again.</string>
+    <string name="error_message_failed_save_image">Failed to save image. Please try again.</string>
+    <string name="error_message_failed_select_image">Failed to select image. Please try again.</string>
 </resources>

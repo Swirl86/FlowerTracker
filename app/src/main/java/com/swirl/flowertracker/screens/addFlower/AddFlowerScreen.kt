@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +49,8 @@ import com.swirl.flowertracker.R
 import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.permissions.CheckPermissions
 import com.swirl.flowertracker.permissions.PermissionDialog
+import com.swirl.flowertracker.screens.addFlower.common.CustomOutlinedTextField
+import com.swirl.flowertracker.screens.common.ErrorDialog
 import com.swirl.flowertracker.utils.saveImageToInternalStorage
 import com.swirl.flowertracker.utils.stringToDate
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
@@ -72,9 +75,8 @@ fun AddFlowerScreen(
     var showPermissionDialog by remember { mutableStateOf(false) }
     var showImagePickerDialog by remember { mutableStateOf(false) }
 
-    // TODO move to own file
-    var errorMessage by remember { mutableStateOf("") }
     var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage = stringResource(R.string.error_message_failed_save_flower)
 
     // Launchers for camera and image selection
     val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
@@ -95,17 +97,16 @@ fun AddFlowerScreen(
                 if (savedImagePath != null) {
                     imageUri = savedImagePath
                 } else {
-                    errorMessage = "Failed to save image. Please try again."
+                    errorMessage = context.getString(R.string.error_message_failed_save_image)
                     showErrorDialog = true
                 }
             } else {
-                errorMessage = "Failed to select image. Please try again."
+                errorMessage = context.getString(R.string.error_message_failed_select_image)
                 showErrorDialog = true
             }
         }
     )
 
-    // TODO move to own file
     // Check permissions for camera and storage
     CheckPermissions(
         onPermissionsGranted = {
@@ -164,7 +165,7 @@ fun AddFlowerScreen(
 
             Image(
                 painter = painter,
-                contentDescription = "Flower Image",
+                contentDescription = stringResource(R.string.desc_flower_image),
                 modifier = Modifier
                     .fillMaxSize()
                     .clip(RoundedCornerShape(8.dp)),
@@ -180,13 +181,13 @@ fun AddFlowerScreen(
                 ) {
                     Icon(
                         imageVector = Icons.Filled.CameraAlt,
-                        contentDescription = "Add image",
+                        contentDescription = stringResource(R.string.desc_add_image),
                         tint = Color.Gray,
                         modifier = Modifier.size(40.dp)
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Tap to add image",
+                        text = stringResource(R.string.add_flower_image),
                         fontSize = 14.sp,
                         color = Color.Gray
                     )
@@ -209,58 +210,45 @@ fun AddFlowerScreen(
         )
 
         // Input fields for flower details
-        OutlinedTextField(
+        CustomOutlinedTextField(
             value = flowerName,
             onValueChange = { flowerName = it },
-            label = { Text("Flower Name") },
-            modifier = Modifier.fillMaxWidth()
+            labelText = stringResource(R.string.flower_name_label)
         )
-        Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        CustomOutlinedTextField(
             value = notes,
             onValueChange = { notes = it },
-            label = { Text("Notes") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = isSaveEnabled
+            labelText = stringResource(R.string.flower_notes_label)
         )
-        Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        CustomOutlinedTextField(
             value = lastWateredDate,
             onValueChange = { lastWateredDate = it },
-            label = { Text("Last Watered Date") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = isSaveEnabled
+            labelText = stringResource(R.string.flower_last_watered_label),
+            isEnabled = isSaveEnabled
         )
-        Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        CustomOutlinedTextField(
             value = nextWateredDate,
             onValueChange = { nextWateredDate = it },
-            label = { Text("Next Watered Date") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = isSaveEnabled
+            labelText = stringResource(R.string.flower_next_watered_label),
+            isEnabled = isSaveEnabled
         )
-        Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        CustomOutlinedTextField(
             value = lastFertilizedDate,
             onValueChange = { lastFertilizedDate = it },
-            label = { Text("Last Fertilized Date") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = isSaveEnabled
+            labelText = stringResource(R.string.flower_last_fertilized_label),
+            isEnabled = isSaveEnabled
         )
-        Spacer(modifier = Modifier.height(8.dp))
 
-        OutlinedTextField(
+        CustomOutlinedTextField(
             value = nextFertilizedDate,
             onValueChange = { nextFertilizedDate = it },
-            label = { Text("Next Fertilized Date") },
-            modifier = Modifier.fillMaxWidth(),
-            enabled = isSaveEnabled
+            labelText = stringResource(R.string.flower_next_fertilized_label),
+            isEnabled = isSaveEnabled
         )
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
@@ -279,30 +267,22 @@ fun AddFlowerScreen(
                     if (saveSuccessful) {
                         onFlowerSaved()
                     } else {
-                        errorMessage = "Failed to save flower. Please try again."
+                        errorMessage = context.getString(R.string.error_message_failed_save_flower)
                         showErrorDialog = true
                     }
                 }
             },
             enabled = isSaveEnabled
         ) {
-            Text(text = "Save Flower")
+            Text(text = stringResource(R.string.save_button))
         }
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // TODO move to own file
-        if (showErrorDialog) {
-            AlertDialog(
-                onDismissRequest = { showErrorDialog = false },
-                title = { Text(text = "Error") },
-                text = { Text(text = errorMessage) },
-                confirmButton = {
-                    Button(onClick = { showErrorDialog = false }) {
-                        Text("OK")
-                    }
-                }
-            )
-        }
+        ErrorDialog(
+            showDialog = showErrorDialog,
+            errorMessage = errorMessage,
+            onDismiss = { showErrorDialog = false }
+        )
     }
 }

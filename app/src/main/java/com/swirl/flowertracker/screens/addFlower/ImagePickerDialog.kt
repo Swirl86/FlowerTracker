@@ -10,7 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.swirl.flowertracker.R
 
 @Composable
 fun ImagePickerDialog(
@@ -22,10 +24,10 @@ fun ImagePickerDialog(
     if (showDialog) {
         AlertDialog(
             onDismissRequest = onDismiss,
-            title = { Text("Select Image Source") },
+            title = { Text(stringResource(R.string.image_picker_title)) },
             text = {
                 Column {
-                    Text("Please select your preferred image source:", modifier = Modifier.padding(bottom = 16.dp))
+                    Text(stringResource(R.string.image_picker_text), modifier = Modifier.padding(bottom = 16.dp))
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceEvenly
@@ -34,20 +36,20 @@ fun ImagePickerDialog(
                             onCameraClick()
                             onDismiss()
                         }) {
-                            Text("Camera")
+                            Text(stringResource(R.string.image_picker_camera))
                         }
                         TextButton(onClick = {
                             onGalleryClick()
                             onDismiss()
                         }) {
-                            Text("Gallery")
+                            Text(stringResource(R.string.image_picker_gallery))
                         }
                     }
                 }
             },
             confirmButton = {
                 TextButton(onClick = onDismiss) {
-                    Text("Cancel")
+                    Text(stringResource(R.string.cancel_button))
                 }
             }
         )

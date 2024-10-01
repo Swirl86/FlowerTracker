@@ -10,6 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.swirl.flowertracker.R
 import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
 
@@ -41,7 +43,7 @@ fun FlowerListScreen(flowers: List<Flower>, onAddFlowerClick: () -> Unit) {
             }
         }
         Button(onClick = onAddFlowerClick, modifier = Modifier.fillMaxWidth()) {
-            Text(text = "Add New Flower")
+            Text(text = stringResource(R.string.add_new_flower))
         }
     }
 }

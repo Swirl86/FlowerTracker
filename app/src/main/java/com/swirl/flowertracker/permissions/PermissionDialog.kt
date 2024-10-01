@@ -5,6 +5,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import com.swirl.flowertracker.R
 import com.swirl.flowertracker.utils.openAppSettings
 
 @Composable
@@ -12,19 +14,19 @@ fun PermissionDialog(onPermissionClose: (Boolean) -> Unit) {
     val context = LocalContext.current
     AlertDialog(
         onDismissRequest = { onPermissionClose(false) },
-        title = { Text("Permission Required") },
-        text = { Text("This app needs permission to access your camera and storage to manage images. Please grant permission in the settings.") },
+        title = { Text(stringResource(R.string.permission_title)) },
+        text = { Text(stringResource(R.string.permission_text)) },
         confirmButton = {
             TextButton(onClick = {
                 openAppSettings(context)
                 onPermissionClose(false) // Dismiss the dialog after opening settings
             }) {
-                Text("Open Settings")
+                Text(stringResource(R.string.permission_settings))
             }
         },
         dismissButton = {
             TextButton(onClick = { onPermissionClose(false) }) {
-                Text("Cancel")
+                Text(stringResource(R.string.cancel_button))
             }
         }
     )

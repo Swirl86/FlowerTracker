@@ -11,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.swirl.flowertracker.R
 import com.swirl.flowertracker.screens.common.FlowerImage
 
 
@@ -23,10 +25,10 @@ fun EmptyScreen(onAddFlowerClick: () -> Unit) {
         verticalArrangement = Arrangement.Center
     ) {
         FlowerImage()
-        Text(text = "No flowers added", style = MaterialTheme.typography.headlineMedium)
+        Text(text = stringResource(R.string.flower_empty), style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = onAddFlowerClick) {
-            Text(text = "Add Flower")
+            Text(text = stringResource(R.string.add_flower_title))
         }
     }
 }

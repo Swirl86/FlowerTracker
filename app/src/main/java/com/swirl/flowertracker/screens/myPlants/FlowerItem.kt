@@ -15,7 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.swirl.flowertracker.R
 import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.screens.common.FlowerImage
 
@@ -28,10 +30,10 @@ fun FlowerItem(flower: Flower) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         FlowerImage(
-            flower.imageUri,
             modifier = Modifier
-            .size(64.dp)
-            .clip(RoundedCornerShape(4.dp)),
+                .size(64.dp)
+                .clip(RoundedCornerShape(4.dp)),
+            flower.imageUri,
             contentScale = ContentScale.Crop
         )
 
@@ -39,7 +41,12 @@ fun FlowerItem(flower: Flower) {
 
         Column {
             Text(text = flower.name, style = MaterialTheme.typography.titleMedium)
-            Text(text = "Last watered: ${flower.lastWatered ?: "N/A"}")
+            val lastWateredText = stringResource(
+                id = R.string.flower_item_last_watered,
+                flower.lastWatered ?: "N/A"
+            )
+
+            Text(text = lastWateredText)
         }
     }
 }
