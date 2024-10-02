@@ -36,6 +36,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun MyPlantsScreen(
     flowerViewModel: FlowerViewModel,
+    onFlowerDetailClick: (Int) -> Unit,
     onAddFlowerClick: () -> Unit
 ) {
     val context = LocalContext.current
@@ -105,14 +106,14 @@ fun MyPlantsScreen(
         } else {
             Column {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(vertical = 8.dp)
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     items(flowers.size) { index ->
                         FlowerItem(
                             flower = flowers[index],
-                            onClick = { /* TODO: Implement navigate to detailed page for flower */ },
+                            onClick = {
+                                onFlowerDetailClick(flowers[index].id)
+                            },
                             onDelete = {
                                 flowerViewModel.viewModelScope.launch {
                                     val deleteFailed = !flowerViewModel.deleteFlower(flowers[index])

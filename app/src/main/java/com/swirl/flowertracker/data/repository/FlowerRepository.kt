@@ -1,5 +1,6 @@
 package com.swirl.flowertracker.data.repository
 
+import androidx.lifecycle.LiveData
 import com.swirl.flowertracker.data.local.dao.FlowerDao
 import com.swirl.flowertracker.data.model.Flower
 import kotlinx.coroutines.flow.Flow
@@ -16,5 +17,13 @@ class FlowerRepository(private val flowerDao: FlowerDao) {
 
     suspend fun delete(flower: Flower) {
         flowerDao.delete(flower)
+    }
+
+    suspend fun updateFlower(flower: Flower) {
+        flowerDao.updateFlower(flower)
+    }
+
+    fun getFlowerById(flowerId: Int): Flow<Flower?> {
+        return flowerDao.getFlowerById(flowerId)
     }
 }

@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.swirl.flowertracker.screens.addFlower.AddFlowerScreen
+import com.swirl.flowertracker.screens.myPlants.FlowerDetailsScreen
 import com.swirl.flowertracker.screens.myPlants.MyPlantsScreen
 import com.swirl.flowertracker.screens.search.SearchScreen
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
@@ -20,8 +21,15 @@ fun Navigation(navController: NavHostController, flowerViewModel: FlowerViewMode
                 flowerViewModel = flowerViewModel,
                 onAddFlowerClick = {
                     navController.navigate(Screen.AddPlant.route)
+                },
+                onFlowerDetailClick = { flowerId ->
+                    navController.navigate("flowerDetails/$flowerId")
                 }
             )
+        }
+        composable("flowerDetails/{flowerId}") { backStackEntry ->
+            val flowerId = backStackEntry.arguments?.getString("flowerId")?.toInt()
+            FlowerDetailsScreen(flowerId = flowerId, flowerViewModel = flowerViewModel)
         }
         composable(route = Screen.AddPlant.route) {
             AddFlowerScreen(
