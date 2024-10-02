@@ -11,7 +11,7 @@ data class Flower(
     val imageUri: String?,
     val notes: String?,
     val lastWatered: LocalDate?,
-    val waterAlarmDate: LocalDate?,
+    val waterInDays: Int?,
     val lastFertilized: LocalDate?,
-    val fertilizeAlarmDate: LocalDate?
+    val fertilizeInDays: Int?
 )

@@ -2,6 +2,7 @@ package com.swirl.flowertracker.di
 
 import android.content.Context
 import androidx.room.Room
+import com.swirl.flowertracker.data.local.DatabaseMigrations
 import com.swirl.flowertracker.data.local.FlowerDatabase
 import com.swirl.flowertracker.data.local.dao.FlowerDao
 import com.swirl.flowertracker.data.repository.FlowerRepository
@@ -23,7 +24,9 @@ object AppModule {
             context,
             FlowerDatabase::class.java,
             "flower_database"
-        ).build()
+        )
+            .addMigrations(DatabaseMigrations.MIGRATION_1_2)
+            .build()
     }
 
     @Provides

@@ -36,7 +36,6 @@ import com.swirl.flowertracker.R
 import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.screens.common.DeleteConfirmationDialog
 import com.swirl.flowertracker.screens.common.FlowerImage
-import com.swirl.flowertracker.utils.daysUntil
 
 @Composable
 fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
@@ -77,10 +76,10 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
                     )
 
                     // Display watering and fertilizing alarms if set
-                    flower.waterAlarmDate?.let { //TODO impl design
+                    flower.waterInDays?.let { //TODO impl design
                         val daysUntilWater = stringResource(
                             id = R.string.flower_item_water,
-                            it.daysUntil()
+                            it
                         )
 
                         Text(
@@ -90,10 +89,10 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
                         )
                     }
 
-                    flower.fertilizeAlarmDate?.let { //TODO impl design
+                    flower.fertilizeInDays?.let { //TODO impl design
                         val daysUntilFertilize = stringResource(
                             id = R.string.flower_item_fertilize,
-                            it.daysUntil()
+                            it
                         )
                         Text(
                             text = daysUntilFertilize,

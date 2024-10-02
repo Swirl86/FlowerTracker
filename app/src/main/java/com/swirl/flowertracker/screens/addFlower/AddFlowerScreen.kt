@@ -48,6 +48,7 @@ import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.permissions.CheckPermissions
 import com.swirl.flowertracker.permissions.PermissionDialog
 import com.swirl.flowertracker.screens.addFlower.common.CustomOutlinedTextField
+import com.swirl.flowertracker.screens.addFlower.common.DatePickerButton
 import com.swirl.flowertracker.screens.common.ErrorDialog
 import com.swirl.flowertracker.utils.saveBitmapToInternalStorage
 import com.swirl.flowertracker.utils.saveImageToInternalStorage
@@ -66,9 +67,9 @@ fun AddFlowerScreen(
     var flowerName by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
     var lastWateredDate by rememberSaveable { mutableStateOf("") }
-    var nextWateredDate by rememberSaveable { mutableStateOf("") }
+    var nextWatering by rememberSaveable { mutableStateOf("") }
     var lastFertilizedDate by rememberSaveable { mutableStateOf("") }
-    var nextFertilizedDate by rememberSaveable { mutableStateOf("") }
+    var nextFertilizing by rememberSaveable {  mutableStateOf("") }
 
     var permissionsGranted by remember { mutableStateOf(false) }
     var showPermissionDialog by remember { mutableStateOf(false) }
@@ -225,35 +226,38 @@ fun AddFlowerScreen(
         CustomOutlinedTextField(
             value = notes,
             onValueChange = { notes = it },
-            labelText = stringResource(R.string.flower_notes_label)
+            labelText = stringResource(R.string.flower_notes_label),
+            isEnabled = isSaveEnabled
         )
 
-        CustomOutlinedTextField(
-            value = lastWateredDate,
-            onValueChange = { lastWateredDate = it },
-            labelText = stringResource(R.string.flower_last_watered_label),
+        DatePickerButton(
+            dateValue = lastWateredDate,
+            onDateSelected = { lastWateredDate = it },
+            label = stringResource(R.string.flower_last_watered_label),
             isEnabled = isSaveEnabled
         )
 
         CustomOutlinedTextField(
-            value = nextWateredDate,
-            onValueChange = { nextWateredDate = it },
+            value = nextWatering,
+            onValueChange = { nextWatering = it },
             labelText = stringResource(R.string.flower_next_watered_label),
+            isEnabled = isSaveEnabled,
+            isNumeric = true
+        )
+
+        DatePickerButton(
+            dateValue = lastFertilizedDate,
+            onDateSelected = { lastFertilizedDate = it },
+            label = stringResource(R.string.flower_last_fertilized_label),
             isEnabled = isSaveEnabled
         )
 
         CustomOutlinedTextField(
-            value = lastFertilizedDate,
-            onValueChange = { lastFertilizedDate = it },
-            labelText = stringResource(R.string.flower_last_fertilized_label),
-            isEnabled = isSaveEnabled
-        )
-
-        CustomOutlinedTextField(
-            value = nextFertilizedDate,
-            onValueChange = { nextFertilizedDate = it },
+            value = nextFertilizing,
+            onValueChange = { nextFertilizing = it },
             labelText = stringResource(R.string.flower_next_fertilized_label),
-            isEnabled = isSaveEnabled
+            isEnabled = isSaveEnabled,
+            isNumeric = true
         )
 
         Button(
@@ -263,9 +267,9 @@ fun AddFlowerScreen(
                     imageUri = imageUri,
                     notes = notes,
                     lastWatered = lastWateredDate.takeIf { it.isNotEmpty() }?.stringToDate(),
-                    waterAlarmDate = nextWateredDate.takeIf { it.isNotEmpty() }?.stringToDate(),
+                    waterInDays = nextWatering.toIntOrNull(),
                     lastFertilized = lastFertilizedDate.takeIf { it.isNotEmpty() }?.stringToDate(),
-                    fertilizeAlarmDate = nextFertilizedDate.takeIf { it.isNotEmpty() }?.stringToDate()
+                    fertilizeInDays = nextFertilizing.toIntOrNull()
                 )
 
                 flowerViewModel.viewModelScope.launch {

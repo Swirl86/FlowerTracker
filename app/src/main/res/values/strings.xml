@@ -9,9 +9,9 @@
     <string name="flower_name_label">Flower Name</string>
     <string name="flower_notes_label">Notes</string>
     <string name="flower_last_watered_label">Last Watered Date</string>
-    <string name="flower_next_watered_label">Next Watered Date</string>
+    <string name="flower_next_watered_label">Days Until Next Watering</string>
     <string name="flower_last_fertilized_label">Last Fertilized Date</string>
-    <string name="flower_next_fertilized_label">Next Fertilized Date</string>
+    <string name="flower_next_fertilized_label">Days Until Next Fertilization</string>
 
     <!-- Add Flower Screen -->
     <string name="add_flower_title">Add Flower</string>
@@ -19,8 +19,8 @@
 
     <!-- Flower Item -->
     <string name="flower_item_last_watered">Last watered: %1$s</string>
-    <string name="flower_item_water">Watering in %1$s days</string>
-    <string name="flower_item_fertilize">Fertilizing in %1$s days</string>
+    <string name="flower_item_water">Water in %1$s days</string>
+    <string name="flower_item_fertilize">Fertilize in %1$s days</string>
 
     <!-- Delete Item -->
     <string name="delete_flower_title">Confirm Deletion</string>
