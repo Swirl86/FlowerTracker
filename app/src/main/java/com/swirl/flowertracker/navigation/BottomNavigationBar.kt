@@ -28,22 +28,29 @@ fun BottomNavigationBar(navController: NavController) {
 
         screens.forEach { screen ->
             val isSelected = currentRoute == screen.route
+            val isFlowerDetails = (currentRoute?.startsWith("flowerDetails") == true && screen.route == Screen.MyPlants.route)
+
             BottomNavigationItem(
                 icon = { Icon(screen.icon, contentDescription = null, tint = Color.White) },
                 label = { Text(screen.title, color = Color.White) },
-                selected = currentRoute == screen.route,
+                selected = isSelected || isFlowerDetails,
                 onClick = {
-                    navController.navigate(screen.route) {
-                        // Clear the back stack to prevent back navigation
-                        launchSingleTop = true
-                        restoreState = true
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
+                    if (screen.route == Screen.MyPlants.route && isFlowerDetails) {
+                        // Pop back to MyPlants, clearing FlowerDetails from the back stack
+                        navController.popBackStack(Screen.MyPlants.route, false)
+                    } else {
+                        navController.navigate(screen.route) {
+                            // Clear the back stack to prevent back navigation
+                            launchSingleTop = true
+                            restoreState = true
+                            popUpTo(navController.graph.startDestinationId) { saveState = true }
+                        }
                     }
                 },
                 selectedContentColor = Color.White,
                 unselectedContentColor = Color.White,
                 modifier = Modifier
-                    .background(if (isSelected) DarkBackground else Color.Transparent)
+                    .background(if (isSelected || isFlowerDetails) DarkBackground else Color.Transparent)
                     .padding(8.dp)
             )
         }
