@@ -25,6 +25,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -46,7 +47,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.swirl.flowertracker.R
 import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.permissions.CheckPermissions
-import com.swirl.flowertracker.permissions.PermissionDialog
+import com.swirl.flowertracker.permissions.PermissionManager
 import com.swirl.flowertracker.screens.addFlower.common.CustomOutlinedTextField
 import com.swirl.flowertracker.screens.addFlower.common.DatePickerButton
 import com.swirl.flowertracker.screens.common.ErrorDialog
@@ -58,8 +59,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AddFlowerScreen(
+    onFlowerSaved: () -> Unit,
     flowerViewModel: FlowerViewModel = hiltViewModel(),
-    onFlowerSaved: () -> Unit
+    permissionManager: PermissionManager = hiltViewModel()
 ) {
     val context = LocalContext.current
 
@@ -71,8 +73,6 @@ fun AddFlowerScreen(
     var lastFertilizedDate by rememberSaveable { mutableStateOf("") }
     var nextFertilizing by rememberSaveable {  mutableStateOf("") }
 
-    var permissionsGranted by remember { mutableStateOf(false) }
-    var showPermissionDialog by remember { mutableStateOf(false) }
     var showImagePickerDialog by remember { mutableStateOf(false) }
 
     var showErrorDialog by remember { mutableStateOf(false) }
@@ -114,26 +114,9 @@ fun AddFlowerScreen(
         }
     )
 
-    // Check permissions for camera and storage
-    CheckPermissions(
-        onPermissionsGranted = {
-            permissionsGranted = true
-            showPermissionDialog = false
-        },
-        onPermissionsDenied = {
-            permissionsGranted = false
-            showPermissionDialog = true
-        }
-    )
-
-    // Listen for clicks to manage permissions
-    if (showPermissionDialog) {
-        PermissionDialog(
-            onPermissionClose = {
-                showPermissionDialog = false
-            }
-        )
-    }
+    CheckPermissions(permissionManager)
+    // Observe the permission status
+    val isPermissionsGranted by permissionManager.permissionsGranted.observeAsState(initial = false)
 
     val isSaveEnabled = flowerName.isNotBlank() && imageUri != null
 
@@ -156,10 +139,10 @@ fun AddFlowerScreen(
                     shape = RoundedCornerShape(8.dp)
                 )
                 .clickable {
-                    if (permissionsGranted) {
+                    if (isPermissionsGranted) {
                         showImagePickerDialog = true
                     } else {
-                        showPermissionDialog = true
+                        permissionManager.onPermissionsDenied()
                     }
                 },
             contentAlignment = Alignment.Center

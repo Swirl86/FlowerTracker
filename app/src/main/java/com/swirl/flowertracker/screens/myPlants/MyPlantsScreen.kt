@@ -23,10 +23,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import com.swirl.flowertracker.R
 import com.swirl.flowertracker.permissions.CheckPermissions
-import com.swirl.flowertracker.permissions.PermissionDialog
+import com.swirl.flowertracker.permissions.PermissionManager
 import com.swirl.flowertracker.screens.common.ErrorDialog
 import com.swirl.flowertracker.screens.myPlants.common.FlowerItem
 import com.swirl.flowertracker.utils.openAppSettings
@@ -35,37 +36,20 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun MyPlantsScreen(
-    flowerViewModel: FlowerViewModel,
     onFlowerDetailClick: (Int) -> Unit,
-    onAddFlowerClick: () -> Unit
+    onAddFlowerClick: () -> Unit,
+    flowerViewModel: FlowerViewModel = hiltViewModel(),
+    permissionManager: PermissionManager = hiltViewModel()
 ) {
     val context = LocalContext.current
     val flowers by flowerViewModel.allFlowers.observeAsState(emptyList())
 
-    var permissionsGranted by remember { mutableStateOf(false) }
-    var showPermissionDialog by remember { mutableStateOf(false) }
-
     var showErrorDialog by remember { mutableStateOf(false) }
-    var errorMessage = stringResource(R.string.error_message_failed_delete_flower)
+    val errorMessage = stringResource(R.string.error_message_failed_delete_flower)
 
-    CheckPermissions(
-        onPermissionsGranted = {
-            permissionsGranted = true
-            showPermissionDialog = false
-        },
-        onPermissionsDenied = {
-            permissionsGranted = false
-            showPermissionDialog = true
-        }
-    )
-
-    if (showPermissionDialog) {
-        PermissionDialog(
-            onPermissionClose = {
-                showPermissionDialog = false
-            }
-        )
-    }
+    CheckPermissions(permissionManager)
+    // Observe the permission status
+    val isPermissionsGranted by permissionManager.permissionsGranted.observeAsState(initial = false)
 
     Column(
         modifier = Modifier
@@ -74,7 +58,7 @@ fun MyPlantsScreen(
     ) {
         if (flowers.isEmpty()) {
             EmptyScreen(onAddFlowerClick = onAddFlowerClick)
-        } else if (!permissionsGranted) {
+        } else if (!isPermissionsGranted) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center

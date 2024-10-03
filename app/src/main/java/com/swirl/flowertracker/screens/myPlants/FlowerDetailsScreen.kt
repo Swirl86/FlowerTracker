@@ -19,7 +19,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -27,8 +26,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
-import com.swirl.flowertracker.data.model.Flower
+import com.swirl.flowertracker.permissions.CheckPermissions
+import com.swirl.flowertracker.permissions.PermissionManager
 import com.swirl.flowertracker.screens.common.FlowerImage
 import com.swirl.flowertracker.screens.myPlants.common.CustomTextField
 import com.swirl.flowertracker.utils.stringToDate
@@ -36,7 +37,11 @@ import com.swirl.flowertracker.viewmodel.FlowerViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun FlowerDetailsScreen(flowerId: Int?, flowerViewModel: FlowerViewModel) {
+fun FlowerDetailsScreen(
+    flowerId: Int?,
+    flowerViewModel: FlowerViewModel = hiltViewModel(),
+    permissionManager: PermissionManager = hiltViewModel()
+) {
     flowerViewModel.setFlowerId(flowerId)
 
     val flower by flowerViewModel.flower.collectAsState()
@@ -49,8 +54,9 @@ fun FlowerDetailsScreen(flowerId: Int?, flowerViewModel: FlowerViewModel) {
     var lastFertilized by rememberSaveable { mutableStateOf("") }
     var fertilizeInDays by rememberSaveable { mutableStateOf("") }
 
-
     val scrollState = rememberScrollState()
+
+    CheckPermissions(permissionManager)
 
     LaunchedEffect(flower) {
         flower?.let {

@@ -1,6 +1,5 @@
 package com.swirl.flowertracker.data.repository
 
-import androidx.lifecycle.LiveData
 import com.swirl.flowertracker.data.local.dao.FlowerDao
 import com.swirl.flowertracker.data.model.Flower
 import kotlinx.coroutines.flow.Flow

@@ -6,6 +6,7 @@ import com.swirl.flowertracker.data.local.DatabaseMigrations
 import com.swirl.flowertracker.data.local.FlowerDatabase
 import com.swirl.flowertracker.data.local.dao.FlowerDao
 import com.swirl.flowertracker.data.repository.FlowerRepository
+import com.swirl.flowertracker.permissions.PermissionManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -36,4 +37,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFlowerRepository(flowerDao: FlowerDao) = FlowerRepository(flowerDao = flowerDao)
+
+    @Provides
+    @Singleton
+    fun providePermissionManager(): PermissionManager {
+        return PermissionManager()
+    }
 }
