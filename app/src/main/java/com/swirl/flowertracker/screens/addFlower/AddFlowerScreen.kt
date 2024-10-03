@@ -1,9 +1,5 @@
 package com.swirl.flowertracker.screens.addFlower
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.launch
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,8 +47,7 @@ import com.swirl.flowertracker.permissions.PermissionManager
 import com.swirl.flowertracker.screens.addFlower.common.CustomOutlinedTextField
 import com.swirl.flowertracker.screens.addFlower.common.DatePickerButton
 import com.swirl.flowertracker.screens.common.ErrorDialog
-import com.swirl.flowertracker.utils.saveBitmapToInternalStorage
-import com.swirl.flowertracker.utils.saveImageToInternalStorage
+import com.swirl.flowertracker.screens.common.customImagePicker
 import com.swirl.flowertracker.utils.stringToDate
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
 import kotlinx.coroutines.launch
@@ -73,44 +68,15 @@ fun AddFlowerScreen(
     var lastFertilizedDate by rememberSaveable { mutableStateOf("") }
     var nextFertilizing by rememberSaveable {  mutableStateOf("") }
 
-    var showImagePickerDialog by remember { mutableStateOf(false) }
-
     var showErrorDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf(context.getString(R.string.error_message_failed_save_flower)) }
 
-    val cameraLauncher = rememberLauncherForActivityResult(ActivityResultContracts.TakePicturePreview()) { bitmap ->
-        if (bitmap == null) {
-            return@rememberLauncherForActivityResult
-        }
-
-        val fileName = "flower_image_${System.currentTimeMillis()}.jpg"
-        val savedImagePath = saveBitmapToInternalStorage(context, bitmap, fileName)
-
-        if (savedImagePath != null) {
-            imageUri = savedImagePath
-        } else {
-            errorMessage = context.getString(R.string.error_message_failed_save_image)
+    val (_, openImagePicker) = customImagePicker(
+        context,
+        onImageUriSelected = { uri -> imageUri = uri.toString() },
+        onError = { error ->
             showErrorDialog = true
-        }
-    }
-
-    val selectImageLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? ->
-            if (uri != null) {
-                val fileName = "flower_image_${System.currentTimeMillis()}.jpg"
-                val savedImagePath = saveImageToInternalStorage(context, uri, fileName)
-
-                if (savedImagePath != null) {
-                    imageUri = savedImagePath
-                } else {
-                    errorMessage = context.getString(R.string.error_message_failed_save_image)
-                    showErrorDialog = true
-                }
-            } else {
-                errorMessage = context.getString(R.string.error_message_failed_select_image)
-                showErrorDialog = true
-            }
+            errorMessage = error
         }
     )
 
@@ -140,7 +106,7 @@ fun AddFlowerScreen(
                 )
                 .clickable {
                     if (isPermissionsGranted) {
-                        showImagePickerDialog = true
+                        openImagePicker()
                     } else {
                         permissionManager.onPermissionsDenied()
                     }
@@ -183,20 +149,6 @@ fun AddFlowerScreen(
                     )
                 }
             }
-        }
-
-        if (showImagePickerDialog) {
-            ImagePickerDialog(
-                onDismiss = { showImagePickerDialog = false },
-                onCameraClick = {
-                    cameraLauncher.launch()
-                    showImagePickerDialog = false
-                },
-                onGalleryClick = {
-                    selectImageLauncher.launch("image/*")
-                    showImagePickerDialog = false
-                }
-            )
         }
 
         // Input fields for flower details

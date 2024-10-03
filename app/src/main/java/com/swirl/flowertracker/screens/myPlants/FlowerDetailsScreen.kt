@@ -18,19 +18,26 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
+import com.swirl.flowertracker.R
 import com.swirl.flowertracker.permissions.CheckPermissions
 import com.swirl.flowertracker.permissions.PermissionManager
 import com.swirl.flowertracker.screens.common.FlowerImage
+import com.swirl.flowertracker.screens.common.customImagePicker
 import com.swirl.flowertracker.screens.myPlants.common.CustomTextField
 import com.swirl.flowertracker.utils.stringToDate
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
@@ -42,6 +49,8 @@ fun FlowerDetailsScreen(
     flowerViewModel: FlowerViewModel = hiltViewModel(),
     permissionManager: PermissionManager = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     flowerViewModel.setFlowerId(flowerId)
 
     val flower by flowerViewModel.flower.collectAsState()
@@ -54,9 +63,21 @@ fun FlowerDetailsScreen(
     var lastFertilized by rememberSaveable { mutableStateOf("") }
     var fertilizeInDays by rememberSaveable { mutableStateOf("") }
 
-    val scrollState = rememberScrollState()
+    var showErrorDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf(context.getString(R.string.error_message_failed_save_flower)) }
 
     CheckPermissions(permissionManager)
+    // Observe the permission status
+    val isPermissionsGranted by permissionManager.permissionsGranted.observeAsState(initial = false)
+
+    val (_, openImagePicker) = customImagePicker(
+        context,
+        onImageUriSelected = { uri -> imageUri = uri.toString() },
+        onError = { error ->
+            showErrorDialog = true
+            errorMessage = error
+        }
+    )
 
     LaunchedEffect(flower) {
         flower?.let {
@@ -74,7 +95,7 @@ fun FlowerDetailsScreen(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
-            .verticalScroll(scrollState),
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -91,24 +112,29 @@ fun FlowerDetailsScreen(
                         shape = RoundedCornerShape(8.dp)
                     )
                     .clickable {
-                        // TODO implement permission check and change img logic
-                        /*if (permissionsGranted) {
-                            showImagePickerDialog = true
+                        if (isPermissionsGranted) {
+                            openImagePicker()
                         } else {
-                            showPermissionDialog = true
-                        }*/
+                            permissionManager.onPermissionsDenied()
+                        }
                     },
                 contentAlignment = Alignment.Center
             ) {
-                FlowerImage(imageUri = flower.imageUri)
+                FlowerImage(
+                    modifier = Modifier
+                    .fillMaxSize()
+                    .clip(RoundedCornerShape(8.dp)),
+                    imageUri = imageUri,
+                    contentScale = ContentScale.Crop
+                )
             }
 
-            CustomTextField("Name", name) { name = it }
-            CustomTextField("Notes", notes) { notes = it }
-            CustomTextField("Last Watered", lastWatered) { lastWatered = it }
-            CustomTextField("Water in X Days", waterInDays, true) { waterInDays = it }
-            CustomTextField("Last Fertilized", lastFertilized) { lastFertilized = it }
-            CustomTextField("Fertilize in X Days", fertilizeInDays, true) { fertilizeInDays = it }
+            CustomTextField(stringResource(R.string.flower_name_label), name) { name = it }
+            CustomTextField(stringResource(R.string.flower_notes_label), notes) { notes = it }
+            CustomTextField(stringResource(R.string.flower_last_watered_label), lastWatered) { lastWatered = it }
+            CustomTextField(stringResource(R.string.flower_next_watered_label), waterInDays, true) { waterInDays = it }
+            CustomTextField(stringResource(R.string.flower_last_fertilized_label), lastFertilized) { lastFertilized = it }
+            CustomTextField(stringResource(R.string.flower_next_fertilized_label), fertilizeInDays, true) { fertilizeInDays = it }
 
 
             // TODO add more logic checks e.g. img and name must exist
