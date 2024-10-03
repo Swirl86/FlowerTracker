@@ -39,6 +39,7 @@ import com.swirl.flowertracker.permissions.PermissionManager
 import com.swirl.flowertracker.screens.common.FlowerImage
 import com.swirl.flowertracker.screens.common.customImagePicker
 import com.swirl.flowertracker.screens.myPlants.common.CustomTextField
+import com.swirl.flowertracker.screens.myPlants.common.IconDatePicker
 import com.swirl.flowertracker.utils.stringToDate
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
 import kotlinx.coroutines.launch
@@ -131,9 +132,21 @@ fun FlowerDetailsScreen(
 
             CustomTextField(stringResource(R.string.flower_name_label), name) { name = it }
             CustomTextField(stringResource(R.string.flower_notes_label), notes) { notes = it }
-            CustomTextField(stringResource(R.string.flower_last_watered_label), lastWatered) { lastWatered = it }
+            IconDatePicker(
+                label = stringResource(R.string.flower_last_watered_label),
+                dateValue = lastWatered,
+                onDateSelected = { selectedDate ->
+                    lastWatered = selectedDate
+                }
+            )
             CustomTextField(stringResource(R.string.flower_next_watered_label), waterInDays, true) { waterInDays = it }
-            CustomTextField(stringResource(R.string.flower_last_fertilized_label), lastFertilized) { lastFertilized = it }
+            IconDatePicker(
+                label = stringResource(R.string.flower_last_fertilized_label),
+                dateValue = lastFertilized,
+                onDateSelected = { selectedDate ->
+                    lastFertilized = selectedDate
+                }
+            )
             CustomTextField(stringResource(R.string.flower_next_fertilized_label), fertilizeInDays, true) { fertilizeInDays = it }
 
 
