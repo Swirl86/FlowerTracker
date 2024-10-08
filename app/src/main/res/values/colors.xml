@@ -13,5 +13,6 @@
     <color name="primaryColor">#FF4CAF50</color>
     <color name="secondaryColor">#FF388E3C</color>
 
+    <color name="darkOrange">#AEA0300A</color>
     <color name="ic_launcher_background">#E8F5E9</color>
 </resources>

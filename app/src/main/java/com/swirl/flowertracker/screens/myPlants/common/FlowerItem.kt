@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.filled.Water
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -28,7 +30,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -40,16 +44,15 @@ import com.swirl.flowertracker.utils.localDateToRemainingDays
 
 @Composable
 fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
-
     var showDeleteConfirmation by remember { mutableStateOf(false) }
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp)
+            .padding(vertical = 12.dp, horizontal = 16.dp)
             .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        shape = RoundedCornerShape(8.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
+        shape = RoundedCornerShape(12.dp)
     ) {
         Box(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -58,56 +61,81 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
             ) {
                 FlowerImage(
                     modifier = Modifier
-                        .size(64.dp)
+                        .size(80.dp)
                         .clip(RoundedCornerShape(4.dp)),
                     imageUri = flower.imageUri,
                     contentScale = ContentScale.Crop
                 )
 
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(12.dp))
 
                 Column(
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 16.dp)
                 ) {
                     Text(
                         text = flower.name,
-                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 18.sp),
+                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
 
-                    // Display watering and fertilizing alarms if set
-                    flower.waterInDays?.localDateToRemainingDays()?.let { //TODO impl design
-                        val daysUntilWater = stringResource(
+                    flower.waterInDays?.localDateToRemainingDays()?.let { daysUntilWater ->
+                        val daysText = stringResource(
                             id = R.string.flower_item_water,
-                            it
+                            daysUntilWater
                         )
-
-                        Text(
-                            text = daysUntilWater,
-                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp),
-                            color = Color.Blue
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(top = 4.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Water,
+                                contentDescription = null,
+                                tint = Color.Blue,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = daysText,
+                                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                                color = Color.Blue
+                            )
+                        }
                     }
 
-                    flower.fertilizeInDays?.localDateToRemainingDays()?.let { //TODO impl design
-                        val daysUntilFertilize = stringResource(
+                    flower.fertilizeInDays?.localDateToRemainingDays()?.let { daysUntilFertilize ->
+                        val daysText = stringResource(
                             id = R.string.flower_item_fertilize,
-                            it
+                            daysUntilFertilize
                         )
-                        Text(
-                            text = daysUntilFertilize,
-                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp),
-                            color = Color.Green
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.padding(top = 2.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Spa,
+                                contentDescription = null,
+                                tint = colorResource(R.color.darkOrange),
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = daysText,
+                                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
+                                color = colorResource(R.color.darkOrange)
+                            )
+                        }
                     }
 
                     val notesDisplay = flower.notes?.take(30) + if ((flower.notes?.length ?: 0) > 30) "..." else ""
                     Text(
-                        text = notesDisplay,
+                        text = notesDisplay ?: "No notes available",
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        modifier = Modifier.padding(top = 4.dp)
                     )
                 }
             }
