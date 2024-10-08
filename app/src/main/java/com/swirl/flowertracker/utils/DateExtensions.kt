@@ -18,6 +18,17 @@ fun String.stringToDate(): LocalDate {
         .getOrDefault(LocalDate.now())
 }
 
+fun Int.daysFromTodayToLocalDate(): LocalDate {
+    return LocalDate.now().plusDays(this.toLong())
+}
+
+fun LocalDate?.localDateToRemainingDays(): Int? {
+    return this?.let {
+        val today = LocalDate.now()
+        ChronoUnit.DAYS.between(today, it).toInt()
+    }
+}
+
 fun Long.convertMillisToLocalDate() : LocalDate {
     return Instant
         .ofEpochMilli(this)

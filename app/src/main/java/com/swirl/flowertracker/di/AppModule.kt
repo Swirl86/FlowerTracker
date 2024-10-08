@@ -26,7 +26,7 @@ object AppModule {
             FlowerDatabase::class.java,
             "flower_database"
         )
-            .addMigrations(DatabaseMigrations.MIGRATION_1_2)
+            .addMigrations(DatabaseMigrations.MIGRATION_2_3)
             .build()
     }
 

@@ -40,6 +40,8 @@ import com.swirl.flowertracker.screens.common.FlowerImage
 import com.swirl.flowertracker.screens.common.customImagePicker
 import com.swirl.flowertracker.screens.myPlants.common.CustomTextField
 import com.swirl.flowertracker.screens.myPlants.common.IconDatePicker
+import com.swirl.flowertracker.utils.daysFromTodayToLocalDate
+import com.swirl.flowertracker.utils.localDateToRemainingDays
 import com.swirl.flowertracker.utils.stringToDate
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
 import kotlinx.coroutines.launch
@@ -86,9 +88,9 @@ fun FlowerDetailsScreen(
             name = it.name
             notes = it.notes ?: ""
             lastWatered = it.lastWatered?.toString() ?: ""
-            waterInDays = it.waterInDays?.toString() ?: ""
+            waterInDays = it.waterInDays?.localDateToRemainingDays()?.toString() ?: ""
             lastFertilized = it.lastFertilized?.toString() ?: ""
-            fertilizeInDays = it.fertilizeInDays?.toString() ?: ""
+            fertilizeInDays = it.fertilizeInDays?.localDateToRemainingDays()?.toString() ?: ""
         }
     }
 
@@ -158,9 +160,9 @@ fun FlowerDetailsScreen(
                         name = name,
                         notes = notes,
                         lastWatered = lastWatered.takeIf { it.isNotEmpty() }?.stringToDate(),
-                        waterInDays = waterInDays.toIntOrNull(),
+                        waterInDays = waterInDays.toIntOrNull()?.daysFromTodayToLocalDate(),
                         lastFertilized = lastFertilized.takeIf { it.isNotEmpty() }?.stringToDate(),
-                        fertilizeInDays = fertilizeInDays.toIntOrNull()
+                        fertilizeInDays = fertilizeInDays.toIntOrNull()?.daysFromTodayToLocalDate()
                     )
                     flowerViewModel.viewModelScope.launch {
                         flowerViewModel.updateFlower(updatedFlower)

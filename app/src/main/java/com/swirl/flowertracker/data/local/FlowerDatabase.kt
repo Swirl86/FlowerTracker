@@ -7,7 +7,7 @@ import com.swirl.flowertracker.data.Converters
 import com.swirl.flowertracker.data.local.dao.FlowerDao
 import com.swirl.flowertracker.data.model.Flower
 
-@Database(entities = [Flower::class], version = 2, exportSchema = false)
+@Database(entities = [Flower::class], version = 3, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class FlowerDatabase : RoomDatabase() {
     abstract fun flowerDao(): FlowerDao

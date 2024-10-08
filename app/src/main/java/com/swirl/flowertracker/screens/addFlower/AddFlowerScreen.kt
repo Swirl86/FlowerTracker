@@ -48,6 +48,7 @@ import com.swirl.flowertracker.screens.addFlower.common.CustomOutlinedTextField
 import com.swirl.flowertracker.screens.addFlower.common.DatePickerButton
 import com.swirl.flowertracker.screens.common.ErrorDialog
 import com.swirl.flowertracker.screens.common.customImagePicker
+import com.swirl.flowertracker.utils.daysFromTodayToLocalDate
 import com.swirl.flowertracker.utils.stringToDate
 import com.swirl.flowertracker.viewmodel.FlowerViewModel
 import kotlinx.coroutines.launch
@@ -202,9 +203,9 @@ fun AddFlowerScreen(
                     imageUri = imageUri,
                     notes = notes,
                     lastWatered = lastWateredDate.takeIf { it.isNotEmpty() }?.stringToDate(),
-                    waterInDays = nextWatering.toIntOrNull(),
+                    waterInDays = nextWatering.toIntOrNull()?.daysFromTodayToLocalDate(),
                     lastFertilized = lastFertilizedDate.takeIf { it.isNotEmpty() }?.stringToDate(),
-                    fertilizeInDays = nextFertilizing.toIntOrNull()
+                    fertilizeInDays = nextFertilizing.toIntOrNull()?.daysFromTodayToLocalDate()
                 )
 
                 flowerViewModel.viewModelScope.launch {
