@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.swirl.flowertracker.utils.clearFocusOnKeyboardDismiss
 
 @Composable
 fun CustomOutlinedTextField(
@@ -26,7 +27,7 @@ fun CustomOutlinedTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(labelText) },
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier.clearFocusOnKeyboardDismiss().fillMaxWidth(),
         enabled = isEnabled,
         keyboardOptions = if (isNumeric) {
             KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)

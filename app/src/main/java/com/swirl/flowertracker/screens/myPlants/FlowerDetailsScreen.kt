@@ -1,5 +1,6 @@
 package com.swirl.flowertracker.screens.myPlants
 
+import android.widget.Toast
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -34,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import com.swirl.flowertracker.R
+import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.permissions.CheckPermissions
 import com.swirl.flowertracker.permissions.PermissionManager
 import com.swirl.flowertracker.screens.common.FlowerImage
@@ -49,6 +51,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun FlowerDetailsScreen(
     flowerId: Int?,
+    onFlowerUpdateSaved: () -> Unit,
     flowerViewModel: FlowerViewModel = hiltViewModel(),
     permissionManager: PermissionManager = hiltViewModel()
 ) {
@@ -57,9 +60,11 @@ fun FlowerDetailsScreen(
     flowerViewModel.setFlowerId(flowerId)
 
     val flower by flowerViewModel.flower.collectAsState()
+    // Store original values to compare later
+    val originalFlowerDetails = remember { mutableStateOf(flower) }
 
     var imageUri by rememberSaveable { mutableStateOf<String?>(null) }
-    var name by rememberSaveable { mutableStateOf("") }
+    var flowerName by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
     var lastWatered by rememberSaveable { mutableStateOf("") }
     var waterInDays by rememberSaveable { mutableStateOf("") }
@@ -84,8 +89,9 @@ fun FlowerDetailsScreen(
 
     LaunchedEffect(flower) {
         flower?.let {
+            originalFlowerDetails.value = it
             imageUri = it.imageUri
-            name = it.name
+            flowerName = it.name
             notes = it.notes ?: ""
             lastWatered = it.lastWatered?.toString() ?: ""
             waterInDays = it.waterInDays?.localDateToRemainingDays()?.toString() ?: ""
@@ -93,6 +99,18 @@ fun FlowerDetailsScreen(
             fertilizeInDays = it.fertilizeInDays?.localDateToRemainingDays()?.toString() ?: ""
         }
     }
+
+    fun hasFlowerChanged(updatedFlower: Flower): Boolean {
+        return updatedFlower.imageUri != originalFlowerDetails.value?.imageUri ||
+                updatedFlower.name != originalFlowerDetails.value?.name ||
+                updatedFlower.notes != originalFlowerDetails.value?.notes ||
+                updatedFlower.lastWatered != originalFlowerDetails.value?.lastWatered ||
+                updatedFlower.waterInDays != originalFlowerDetails.value?.waterInDays ||
+                updatedFlower.lastFertilized != originalFlowerDetails.value?.lastFertilized ||
+                updatedFlower.fertilizeInDays != originalFlowerDetails.value?.fertilizeInDays
+    }
+
+    val isSaveEnabled = flowerName.isNotBlank() && imageUri != null
 
     Column(
         modifier = Modifier
@@ -132,7 +150,7 @@ fun FlowerDetailsScreen(
                 )
             }
 
-            CustomTextField(stringResource(R.string.flower_name_label), name) { name = it }
+            CustomTextField(stringResource(R.string.flower_name_label), flowerName) { flowerName = it }
             CustomTextField(stringResource(R.string.flower_notes_label), notes) { notes = it }
             IconDatePicker(
                 label = stringResource(R.string.flower_last_watered_label),
@@ -151,29 +169,38 @@ fun FlowerDetailsScreen(
             )
             CustomTextField(stringResource(R.string.flower_next_fertilized_label), fertilizeInDays, true) { fertilizeInDays = it }
 
-
-            // TODO add more logic checks e.g. img and name must exist
             Button(
                 onClick = {
                     val updatedFlower = flower.copy(
                         imageUri = imageUri,
-                        name = name,
+                        name = flowerName,
                         notes = notes,
                         lastWatered = lastWatered.takeIf { it.isNotEmpty() }?.stringToDate(),
                         waterInDays = waterInDays.toIntOrNull()?.daysFromTodayToLocalDate(),
                         lastFertilized = lastFertilized.takeIf { it.isNotEmpty() }?.stringToDate(),
                         fertilizeInDays = fertilizeInDays.toIntOrNull()?.daysFromTodayToLocalDate()
                     )
-                    flowerViewModel.viewModelScope.launch {
-                        flowerViewModel.updateFlower(updatedFlower)
+                    if (hasFlowerChanged(updatedFlower)) {
+                        flowerViewModel.viewModelScope.launch {
+                            val saveSuccessful = flowerViewModel.updateFlower(updatedFlower)
+                            if (saveSuccessful) {
+                                onFlowerUpdateSaved()
+                            } else {
+                                errorMessage = context.getString(R.string.error_message_failed_save_flower)
+                                showErrorDialog = true
+                            }
+                        }
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.info_no_change), Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier.padding(top = 16.dp)
+                modifier = Modifier.padding(top = 16.dp),
+                enabled = isSaveEnabled
             ) {
-                Text("Save Changes")
+                Text(stringResource(R.string.change_save_button))
             }
         } ?: run {
-            Text(text = "Flower not found", style = MaterialTheme.typography.bodyLarge)
+            Text(text = stringResource(R.string.error_message_not_found), style = MaterialTheme.typography.bodyLarge)
         }
     }
 }

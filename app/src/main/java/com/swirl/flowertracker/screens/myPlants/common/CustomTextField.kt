@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.swirl.flowertracker.utils.clearFocusOnKeyboardDismiss
 
 @Composable
 fun CustomTextField(
@@ -23,7 +24,7 @@ fun CustomTextField(
         value = value,
         onValueChange = onValueChange,
         label = { Text(label + if (value.isEmpty()) " N/A" else "") },
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.clearFocusOnKeyboardDismiss().fillMaxWidth(),
         keyboardOptions = if (isNumeric) {
             KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number)
         } else {

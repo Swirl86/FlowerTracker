@@ -28,7 +28,14 @@ fun Navigation(navController: NavHostController, flowerViewModel: FlowerViewMode
         }
         composable("flowerDetails/{flowerId}") { backStackEntry ->
             val flowerId = backStackEntry.arguments?.getString("flowerId")?.toInt()
-            FlowerDetailsScreen(flowerId = flowerId)
+            FlowerDetailsScreen(
+                flowerId = flowerId,
+                onFlowerUpdateSaved = {
+                    navController.navigate(Screen.MyPlants.route) {
+                        popUpTo(Screen.MyPlants.route) { inclusive = true }
+                    }
+                }
+            )
         }
         composable(route = Screen.AddPlant.route) {
             AddFlowerScreen(

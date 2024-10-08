@@ -45,8 +45,13 @@ class FlowerViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateFlower(flower: Flower) {
-        repository.updateFlower(flower)
+    suspend fun updateFlower(flower: Flower): Boolean {
+        return try {
+            repository.updateFlower(flower)
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     suspend fun deleteFlower(flower: Flower): Boolean {
