@@ -1,5 +1,6 @@
 package com.swirl.flowertracker.screens.myPlants.common
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -52,7 +53,10 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
             .padding(vertical = 12.dp, horizontal = 16.dp)
             .clickable(onClick = onClick),
         elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface,
+        )
     ) {
         Box(modifier = Modifier.padding(16.dp)) {
             Row(
@@ -61,13 +65,14 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
             ) {
                 FlowerImage(
                     modifier = Modifier
-                        .size(80.dp)
-                        .clip(RoundedCornerShape(4.dp)),
+                        .size(100.dp)
+                        .clip(RoundedCornerShape(8.dp))
+                        .border(2.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.2f), RoundedCornerShape(8.dp)),
                     imageUri = flower.imageUri,
                     contentScale = ContentScale.Crop
                 )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(16.dp))
 
                 Column(
                     modifier = Modifier
@@ -76,27 +81,25 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
                 ) {
                     Text(
                         text = flower.name,
-                        style = MaterialTheme.typography.titleMedium.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
+                        style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                         maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        color = MaterialTheme.colorScheme.primary
                     )
 
                     flower.waterInDays?.localDateToRemainingDays()?.let { daysUntilWater ->
-                        val daysText = stringResource(
-                            id = R.string.flower_item_water,
-                            daysUntilWater
-                        )
+                        val daysText = stringResource(id = R.string.flower_item_water, daysUntilWater)
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(top = 4.dp)
+                            modifier = Modifier.padding(top = 6.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Water,
                                 contentDescription = null,
                                 tint = Color.Blue,
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(20.dp)
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = daysText,
                                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
@@ -106,21 +109,18 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
                     }
 
                     flower.fertilizeInDays?.localDateToRemainingDays()?.let { daysUntilFertilize ->
-                        val daysText = stringResource(
-                            id = R.string.flower_item_fertilize,
-                            daysUntilFertilize
-                        )
+                        val daysText = stringResource(id = R.string.flower_item_fertilize, daysUntilFertilize)
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.padding(top = 2.dp)
+                            modifier = Modifier.padding(top = 6.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Spa,
                                 contentDescription = null,
                                 tint = colorResource(R.color.darkOrange),
-                                modifier = Modifier.size(16.dp)
+                                modifier = Modifier.size(20.dp)
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
                                 text = daysText,
                                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 14.sp),
@@ -129,13 +129,13 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
                         }
                     }
 
-                    val notesDisplay = flower.notes?.take(30) + if ((flower.notes?.length ?: 0) > 30) "..." else ""
+                    val notesDisplay = flower.notes?.take(40) + if ((flower.notes?.length ?: 0) > 40) "..." else ""
                     Text(
-                        text = notesDisplay ?: "No notes available",
+                        text = notesDisplay,
                         style = MaterialTheme.typography.bodyMedium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(top = 4.dp)
+                        modifier = Modifier.padding(top = 8.dp)
                     )
                 }
             }
@@ -144,12 +144,13 @@ fun FlowerItem(flower: Flower, onClick: () -> Unit, onDelete: () -> Unit) {
                 onClick = { showDeleteConfirmation = true },
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .size(24.dp)
+                    .size(28.dp)
+                    .padding(4.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = stringResource(R.string.desc_delete_flower),
-                    tint = Color.Red
+                    tint = MaterialTheme.colorScheme.error
                 )
             }
 

@@ -11,13 +11,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.swirl.flowertracker.R
+import com.swirl.flowertracker.utils.customTextFieldColors
 import java.util.Calendar
 import java.util.Locale
 
@@ -34,13 +34,7 @@ fun IconDatePicker (
         context,
         R.style.CustomDatePickerDialog,
         { _, selectedYear, selectedMonth, selectedDay ->
-            val formattedDate = String.format(
-                Locale.getDefault(),
-                "%02d %02d %04d",
-                selectedDay,
-                selectedMonth + 1,
-                selectedYear
-            )
+            val formattedDate = String.format(Locale.getDefault(), "%02d %02d %04d", selectedDay, selectedMonth + 1, selectedYear)
             onDateSelected(formattedDate)
         },
         calendar.get(Calendar.YEAR),
@@ -51,7 +45,15 @@ fun IconDatePicker (
     TextField(
         value = dateValue,
         onValueChange = {},
-        label = { Text(label + if (dateValue.isEmpty()) " N/A" else "") },
+        label = {
+            Text(
+                text = label + if (dateValue.isEmpty()) " N/A" else "",
+                style = MaterialTheme.typography.bodyMedium.copy(
+                    color = if (dateValue.isEmpty()) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+                    else MaterialTheme.colorScheme.primary
+                )
+            )
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
@@ -66,14 +68,7 @@ fun IconDatePicker (
                 tint = MaterialTheme.colorScheme.primary
             )
         },
-        colors = TextFieldDefaults.colors(
-            disabledLabelColor = MaterialTheme.colorScheme.onSurface,
-            focusedTextColor = MaterialTheme.colorScheme.onSurface,
-            unfocusedTextColor = MaterialTheme.colorScheme.onSurface,
-            disabledTextColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-            focusedIndicatorColor = MaterialTheme.colorScheme.primary,
-            unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
-        ),
+        colors = customTextFieldColors(),
         textStyle = TextStyle(color = MaterialTheme.colorScheme.onSurface)
     )
 }

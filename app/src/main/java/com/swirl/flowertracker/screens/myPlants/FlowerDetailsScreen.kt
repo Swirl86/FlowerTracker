@@ -6,9 +6,13 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
@@ -116,21 +121,16 @@ fun FlowerDetailsScreen(
             .fillMaxSize()
             .padding(16.dp)
             .verticalScroll(rememberScrollState()),
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.spacedBy(6.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
         flower?.let { flower ->
             Box(
                 modifier = Modifier
-                    .size(150.dp)
-                    .padding(bottom = 16.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .border(
-                        width = 2.dp,
-                        color = Color.Gray,
-                        shape = RoundedCornerShape(8.dp)
-                    )
+                    .size(180.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .border(2.dp, Color.Gray, RoundedCornerShape(16.dp))
                     .clickable {
                         if (isPermissionsGranted) {
                             openImagePicker()
@@ -142,32 +142,60 @@ fun FlowerDetailsScreen(
             ) {
                 FlowerImage(
                     modifier = Modifier
-                    .fillMaxSize()
-                    .clip(RoundedCornerShape(8.dp)),
+                        .fillMaxSize()
+                        .clip(RoundedCornerShape(16.dp)),
                     imageUri = imageUri,
                     contentScale = ContentScale.Crop
                 )
             }
 
-            CustomTextField(stringResource(R.string.flower_name_label), flowerName) { flowerName = it }
-            CustomTextField(stringResource(R.string.flower_notes_label), notes) { notes = it }
+            Spacer(modifier = Modifier.width(8.dp))
+
+            // Flower name input
+            CustomTextField(
+                label = stringResource(R.string.flower_name_label),
+                value = flowerName,
+                onValueChange = { flowerName = it }
+            )
+
+            // Flower notes input
+            CustomTextField(
+                label = stringResource(R.string.flower_notes_label),
+                value = notes,
+                onValueChange = { notes = it }
+            )
+
+            // Watering date picker
             IconDatePicker(
                 label = stringResource(R.string.flower_last_watered_label),
                 dateValue = lastWatered,
-                onDateSelected = { selectedDate ->
-                    lastWatered = selectedDate
-                }
+                onDateSelected = { selectedDate -> lastWatered = selectedDate }
             )
-            CustomTextField(stringResource(R.string.flower_next_watered_label), waterInDays, true) { waterInDays = it }
+
+            // Water interval input
+            CustomTextField(
+                label = stringResource(R.string.flower_next_watered_label),
+                value = waterInDays,
+                onValueChange = { waterInDays = it },
+                isNumeric = true
+            )
+
+            // Fertilizer date picker
             IconDatePicker(
                 label = stringResource(R.string.flower_last_fertilized_label),
                 dateValue = lastFertilized,
-                onDateSelected = { selectedDate ->
-                    lastFertilized = selectedDate
-                }
+                onDateSelected = { selectedDate -> lastFertilized = selectedDate }
             )
-            CustomTextField(stringResource(R.string.flower_next_fertilized_label), fertilizeInDays, true) { fertilizeInDays = it }
 
+            // Fertilizer interval input
+            CustomTextField(
+                label = stringResource(R.string.flower_next_fertilized_label),
+                value = fertilizeInDays,
+                onValueChange = { fertilizeInDays = it },
+                isNumeric = true
+            )
+
+            // Save button
             Button(
                 onClick = {
                     val updatedFlower = flower.copy(
@@ -193,13 +221,24 @@ fun FlowerDetailsScreen(
                         Toast.makeText(context, context.getString(R.string.info_no_change), Toast.LENGTH_SHORT).show()
                     }
                 },
-                modifier = Modifier.padding(top = 16.dp),
-                enabled = isSaveEnabled
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .height(50.dp),
+                enabled = isSaveEnabled,
+                shape = RoundedCornerShape(8.dp)
             ) {
-                Text(stringResource(R.string.change_save_button))
+                Text(
+                    text = stringResource(R.string.change_save_button),
+                    style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                )
             }
+
         } ?: run {
-            Text(text = stringResource(R.string.error_message_not_found), style = MaterialTheme.typography.bodyLarge)
+            Text(
+                text = stringResource(R.string.error_message_not_found),
+                style = MaterialTheme.typography.bodyLarge.copy(color = MaterialTheme.colorScheme.error)
+            )
         }
     }
 }
