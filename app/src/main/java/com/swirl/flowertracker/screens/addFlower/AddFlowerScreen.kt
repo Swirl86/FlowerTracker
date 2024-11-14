@@ -20,8 +20,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -55,11 +55,11 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun AddFlowerScreen(
-    onFlowerSaved: () -> Unit,
-    flowerViewModel: FlowerViewModel = hiltViewModel(),
-    permissionManager: PermissionManager = hiltViewModel()
+    onFlowerSaved: () -> Unit
 ) {
     val context = LocalContext.current
+    val permissionManager: PermissionManager = hiltViewModel()
+    val flowerViewModel: FlowerViewModel = hiltViewModel()
 
     var imageUri by rememberSaveable { mutableStateOf<String?>(null) }
     var flowerName by rememberSaveable { mutableStateOf("") }
@@ -83,7 +83,7 @@ fun AddFlowerScreen(
 
     CheckPermissions(permissionManager)
     // Observe the permission status
-    val isPermissionsGranted by permissionManager.permissionsGranted.observeAsState(initial = false)
+    val isPermissionsGranted by permissionManager.permissionsGranted.collectAsState()
 
     val isSaveEnabled = flowerName.isNotBlank() && imageUri != null
 

@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -51,11 +50,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun FlowerDetailsScreen(
     flowerId: Int?,
-    onFlowerUpdateSaved: () -> Unit,
-    flowerViewModel: FlowerViewModel = hiltViewModel(),
-    permissionManager: PermissionManager = hiltViewModel()
+    onFlowerUpdateSaved: () -> Unit
 ) {
     val context = LocalContext.current
+    val permissionManager: PermissionManager = hiltViewModel()
+    val flowerViewModel: FlowerViewModel = hiltViewModel()
 
     flowerViewModel.setFlowerId(flowerId)
 
@@ -76,7 +75,7 @@ fun FlowerDetailsScreen(
 
     CheckPermissions(permissionManager)
     // Observe the permission status
-    val isPermissionsGranted by permissionManager.permissionsGranted.observeAsState(initial = false)
+    val isPermissionsGranted by permissionManager.permissionsGranted.collectAsState()
 
     val (_, openImagePicker) = customImagePicker(
         context,

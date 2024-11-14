@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 class FlowerRepository(private val flowerDao: FlowerDao) {
 
-    fun getAllFlowers(): Flow<List<Flower>> {
+    fun getAllFlowers(): List<Flower> {
         return flowerDao.getAllFlowers()
     }
 

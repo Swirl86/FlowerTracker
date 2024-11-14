@@ -9,8 +9,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,18 +38,19 @@ import kotlinx.coroutines.launch
 fun MyPlantsScreen(
     onFlowerDetailClick: (Int) -> Unit,
     onAddFlowerClick: () -> Unit,
-    flowerViewModel: FlowerViewModel = hiltViewModel(),
-    permissionManager: PermissionManager = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val flowers by flowerViewModel.allFlowers.observeAsState(emptyList())
+    val permissionManager: PermissionManager = hiltViewModel()
+    val flowerViewModel: FlowerViewModel = hiltViewModel()
+
+    val flowers by flowerViewModel.flowers.collectAsState()
 
     var showErrorDialog by remember { mutableStateOf(false) }
     val errorMessage = stringResource(R.string.error_message_failed_delete_flower)
 
     CheckPermissions(permissionManager)
     // Observe the permission status
-    val isPermissionsGranted by permissionManager.permissionsGranted.observeAsState(initial = false)
+    val isPermissionsGranted by permissionManager.permissionsGranted.collectAsState()
 
     Column(
         modifier = Modifier

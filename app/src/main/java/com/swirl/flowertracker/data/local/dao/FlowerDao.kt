@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.Flow
 interface FlowerDao {
 
     @Query("SELECT * FROM flower_table")
-    fun getAllFlowers(): Flow<List<Flower>>
+    fun getAllFlowers(): List<Flower>
 
     @Query("SELECT * FROM flower_table WHERE id = :flowerId LIMIT 1")
     fun getFlowerById(flowerId: Int): Flow<Flower?>

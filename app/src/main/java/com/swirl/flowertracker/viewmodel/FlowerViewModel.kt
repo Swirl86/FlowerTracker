@@ -1,18 +1,19 @@
 package com.swirl.flowertracker.viewmodel
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.swirl.flowertracker.data.model.Flower
 import com.swirl.flowertracker.data.repository.FlowerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,9 +21,17 @@ class FlowerViewModel @Inject constructor(
     private val repository: FlowerRepository
 ) : ViewModel() {
 
-    val allFlowers: LiveData<List<Flower>> = repository.getAllFlowers().asLiveData()
-
     private val _flowerId = MutableStateFlow<Int?>(null)
+    private val _flowers = MutableStateFlow<List<Flower>>(emptyList())
+    val flowers: StateFlow<List<Flower>> = _flowers
+
+    init {
+        viewModelScope.launch {
+            _flowers.value = withContext(Dispatchers.IO) {
+                repository.getAllFlowers()
+            }
+        }
+    }
 
     val flower: StateFlow<Flower?> = _flowerId
         .filterNotNull() // Ignore null values

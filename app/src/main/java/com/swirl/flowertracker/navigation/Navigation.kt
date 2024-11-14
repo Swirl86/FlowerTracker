@@ -11,10 +11,9 @@ import com.swirl.flowertracker.screens.addFlower.AddFlowerScreen
 import com.swirl.flowertracker.screens.myPlants.FlowerDetailsScreen
 import com.swirl.flowertracker.screens.myPlants.MyPlantsScreen
 import com.swirl.flowertracker.screens.search.SearchScreen
-import com.swirl.flowertracker.viewmodel.FlowerViewModel
 
 @Composable
-fun Navigation(navController: NavHostController, flowerViewModel: FlowerViewModel, innerPadding: PaddingValues) {
+fun Navigation(navController: NavHostController, innerPadding: PaddingValues) {
     NavHost(navController = navController, startDestination = Screen.MyPlants.route, Modifier.padding(innerPadding)) {
         composable(route = Screen.MyPlants.route) {
             MyPlantsScreen(
