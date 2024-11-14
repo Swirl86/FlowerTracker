@@ -1,6 +1,6 @@
 [versions]
 accompanistPermissions = "0.31.1-alpha"
-agp = "8.6.1"
+agp = "8.7.2"
 coil = "2.0.0"
 coreSplashscreen = "1.0.1"
 hiltNavigationCompose = "1.2.0"
